@@ -2,6 +2,10 @@ body{
   background: #eddbcd;
 }
 
+h1{
+  color: #233237;
+  text-align: center;
+}
 .navbar{
   background: #c06014;
   width: 100%;
@@ -13,6 +17,13 @@ body{
   margin:auto;
   height:1200px;
   background: #233237;
+}
+
+input{
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #233237;
 }
 
 ul{
@@ -43,7 +54,7 @@ li a:hover {
   text-decoration: underline;
 }
 
-.btnContainer{
+.searchFormContainer{
   display: inline-block;
   float: right;
   margin-top: 12px;
@@ -60,21 +71,32 @@ li a:hover {
   text-align: center;
 }
 
+#loginBtn,#signUpBtn{
+  border:none;
+  height: 24px;
+  vertical-align: bottom;
+  margin-top:10px;
+  text-align: center;
+  background: #c06014;
+  color: #233237;
+}
+
+#signUpBtn{
+  margin-left: 42px;
+}
+
 #searchBar{
   margin-right: 5px;
   border-radius: 3px;
   width:200px;
   height: 24px;
   vertical-align: top;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
   padding-left: 10px;
   border: 1px solid #c06014;
  /*background: white url('../images/Search-icon.png') no-repeat 180px 4px;*/
 }
 
-#searchBar:focus{
+#searchBar:focus, .inputWrapper>input:focus{
   border: 1px solid #233237;
 }
 
@@ -93,10 +115,37 @@ li a:hover {
 #searchBtn:hover{
   background: white url('../images/Search-icon-hover.png') no-repeat 0 4px;
 }
-label{
+.hidden{
   display: none;
 }
 
 form{
   display: inline-block;
+}
+
+#signUpForm{
+  margin-left:150px;
+}
+
+.inputWrapper > input{
+  width: 150px;
+  border-radius: 3px;
+  height: 24px;
+  vertical-align: top;
+  padding-left: 10px;
+  border: 1px solid #c06014;
+}
+
+.cancelBtn{
+  position: relative;
+  float: right;
+  border: none;
+  height: 24px;
+  text-align: center;
+  background: none;
+  color: #233237;
+}
+
+label{
+  color: #233237;
 }
