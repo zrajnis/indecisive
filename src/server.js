@@ -5,20 +5,19 @@ const http = require('http').Server(app);
 const React = require('react');
 const mongoose = require('mongoose');
 const routes = require('./routes');
-const config = require('./config.js')
+const config = require('./config.js');
 let User = require('./models/User');
 let Dilemma = require('./models/Dilemma');
+
 app.set('port', process.env.PORT || 3000);
-//app.use('/',routes.index);
-//app.engine('hbs',hbs({extname:'hbs', defaultLayout:'layout', layoutsDir:__dirname+ '/views/'}));
-//app.set('views', path.join(__dirname, '/views'));
-//app.set('view engine', 'hbs');
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', require('express-react-views').createEngine());
 app.use(express.static(path.join(__dirname, 'static')));
 
-const options={ server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };
+const options={ server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },replset: { socketOptions:
+{ keepAlive: 300000, connectTimeoutMS : 30000 } } };
 mongoose.connect(config.database,options); // connect to database
 
 app.set('superSecret', config.secret); // secret variable
