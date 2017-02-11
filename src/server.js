@@ -12,8 +12,8 @@ let Dilemma = require('./models/Dilemma');
 app.set('port', process.env.PORT || 3000);
 
 app.set('views', __dirname + '/views');
-app.set('view engine', 'jsx');
-app.engine('jsx', require('express-react-views').createEngine());
+app.set('view engine', 'pug');
+app.get('/', require('./routes').index);
 app.use(express.static(path.join(__dirname, 'static')));
 
 const options={ server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },replset: { socketOptions:
