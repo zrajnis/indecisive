@@ -3,19 +3,26 @@ const path = require('path');
 const app = express();
 const http = require('http').Server(app);
 const React = require('react');
+const mongoose = require('mongoose');
+const routes = require('./routes');
+const config = require('./config.js');
+let User = require('./models/User');
+let Dilemma = require('./models/Dilemma');
 
-const routes = require('./routes/index');
 app.set('port', process.env.PORT || 3000);
-//app.use('/',routes.index);
-//app.engine('hbs',hbs({extname:'hbs', defaultLayout:'layout', layoutsDir:__dirname+ '/views/'}));
-//app.set('views', path.join(__dirname, '/views'));
-//app.set('view engine', 'hbs');
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 app.get('/', require('./routes').index);
 app.use(express.static(path.join(__dirname, 'static')));
 
+const options={ server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },replset: { socketOptions:
+{ keepAlive: 300000, connectTimeoutMS : 30000 } } };
+mongoose.connect(config.database,options); // connect to database
 
+app.set('superSecret', config.secret); // secret variable
+
+app.get('/', require('./routes').index);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   const err = new Error('Not Found');
