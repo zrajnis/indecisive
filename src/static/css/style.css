@@ -71,7 +71,7 @@ li a:hover {
   text-align: center;
 }
 
-#loginBtn,#signUpBtn{
+#loginBtn,#signupBtn{
   border:none;
   height: 24px;
   vertical-align: bottom;
@@ -81,7 +81,7 @@ li a:hover {
   color: #233237;
 }
 
-#signUpBtn{
+#signupBtn{
   margin-left: 42px;
 }
 
@@ -123,7 +123,7 @@ form{
   display: inline-block;
 }
 
-#signUpForm{
+#signupForm{
   margin-left:150px;
 }
 

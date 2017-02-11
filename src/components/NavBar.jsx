@@ -1,11 +1,20 @@
 import React from 'react';
 import SignUpModal from './SignUpModal.jsx';
+import { Field, reduxForm } from 'redux-form';
 
 class NavBar extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { isModalOpen: false };
+    this.state = {
+      isModalOpen: false,
+      signupData:{
+        username: null,
+        email: null,
+        password: null
+      }
+    };
+    this.updateSignupData = this.updateSignupData.bind(this);
   };
   openModal() {
     this.setState({ isModalOpen: true })
@@ -13,6 +22,10 @@ class NavBar extends React.Component {
 
   closeModal() {
     this.setState({ isModalOpen: false })
+  }
+
+  updateSignupData(e) {
+
   }
 
   render() {
@@ -39,20 +52,20 @@ class NavBar extends React.Component {
         <SignUpModal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
           <button className="cancelBtn"onClick={() => this.closeModal()}>x</button>
           <h1>Sign Up!</h1>
-          <form id="signUpForm">
-            <label for="signUpUsername">Choose the username:</label>
+          <form id="signupForm">
+            <label for="signupUsername">Choose the username:</label>
             <div className="inputWrapper">
-              <input type="text" id="signUpUsername"  />
+              <input type="text" id="signupUsername"  />
             </div>
-            <label for="signUpEmail">Enter the email:</label>
+            <label for="signupEmail">Enter the email:</label>
             <div className="inputWrapper">
-              <input type="email" id="signUpEmail"  />
+              <input type="email" id="signupEmail"  />
             </div>
-            <label for="signUpEmail">Enter the password:</label>
+            <label for="signupEmail">Enter the password:</label>
             <div className="inputWrapper">
-              <input type="password" id="signUpPassword"  />
+              <input type="password" id="signupPassword"  />
             </div>
-            <button type="submit" id="signUpBtn">Sign Up!</button>
+            <button type="submit" id="signupBtn">Sign Up!</button>
 
           </form>
 
