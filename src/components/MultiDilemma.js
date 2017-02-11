@@ -1,6 +1,6 @@
 import React from 'react';
 
-class BiDilemma extends React.Component {
+class MultiDilemma extends React.Component {
   render() {
     return (
       <div>
@@ -10,4 +10,4 @@ class BiDilemma extends React.Component {
   }
 }
 
-module.exports = BiDilemma;
+export default MultiDilemma;

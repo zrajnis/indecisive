@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./src/server.js",
     "lint": "eslint ./src/server.js",
+    "start:webpack": "webpack-dev-server --hot ",
     "auto-start": "nodemon --exec \"npm run lint && npm start\"",
     "start:server": "./src/server.js"
   },
@@ -12,11 +13,14 @@
     "debug": "~2.2.0",
     "express": "~4.14.0",
     "express-react-views": "^0.10.2",
+    "pug": "^2.0.0-beta11",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-icons": "^2.2.1",
     "react-router": "^3.0.0",
     "react-tap-event-plugin": "^2.0.1",
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.2",
     "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
