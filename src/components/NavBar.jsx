@@ -1,5 +1,5 @@
 import React from 'react';
-import SignUpModal from './SignUpModal.jsx';
+import Modal from './Modal.jsx';
 import SignupForm from './SignupForm.jsx';
 
 class NavBar extends React.Component {
@@ -39,11 +39,11 @@ class NavBar extends React.Component {
             <button type="button" id="signup" onClick={() => this.openModal()}>Sign Up</button>
           </div>
         </nav>
-        <SignUpModal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
+        <Modal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
           <button className="cancelBtn" onClick={() => this.closeModal()}>x</button>
           <h1>Sign Up!</h1>
           <SignupForm/>
-        </SignUpModal>
+        </Modal>
       </div>
 
 

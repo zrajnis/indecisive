@@ -10,6 +10,7 @@
     "start:server": "./src/server.js"
   },
   "dependencies": {
+    "body-parser": "^1.16.1",
     "debug": "~2.2.0",
     "express": "~4.14.0",
     "mongoose": "^4.5.8",

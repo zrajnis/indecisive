@@ -1,6 +1,6 @@
 import React from 'react';
 
-class SignUp extends React.Component {
+class Modal extends React.Component {
   render() {
     if (this.props.isOpen === false)
       return null;
@@ -48,5 +48,4 @@ class SignUp extends React.Component {
   }
 }
 
-
-export default SignUp;
+export default Modal;

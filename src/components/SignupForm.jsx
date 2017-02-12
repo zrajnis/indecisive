@@ -2,10 +2,8 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 const {connect} = require('react-redux');
 
-var mapStateToProps = state => state;
-
-var form = reduxForm({
-  form: 'SignupForm',
+let form = reduxForm({
+  form: 'SignupReduxForm',
   fields: ['username', 'email', 'password'],
   validate
 });
@@ -14,8 +12,17 @@ var form = reduxForm({
 class SignupForm extends React.Component {
 
   handleFormSubmit(formProps) {
-    alert(JSON.stringify(formProps));
+    fetch('/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        newUser: formProps
+      })
+    });
   }
+  
   render() {
     return (
       <form id="signupForm" onSubmit={this.props.handleSubmit(this.handleFormSubmit.bind(this))}>
@@ -54,4 +61,11 @@ function validate(formProps) {
   return errors;
 
 }
+
+function mapStateToProps(state) { 
+  return {
+    user: state.user
+  };
+}
+
 export default connect(mapStateToProps)(form(SignupForm));
