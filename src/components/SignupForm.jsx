@@ -26,6 +26,22 @@ class SignupForm extends React.Component {
       body: JSON.stringify({
         newUser: formProps
       })
+    }).then((response) => {
+      response.json().then((data) => {
+        switch(data.result){
+          case 'username taken':
+            alert('username taken');
+            break;
+          case 'email in use':
+            alert('email in use');
+            break;
+          case 'success':
+            alert('it was a success');
+            break;
+          default:
+            alert('something bad happened!');
+        }
+      });
     });
   }
   
@@ -39,6 +55,8 @@ class SignupForm extends React.Component {
         <label htmlFor="signupEmail">Enter the password:</label>
         <Field name="password" type="password" id="signupPassword" component={renderField} />
         <button type="submit" id="signupBtn">Sign Up!</button>
+        <div className="error"> </div>
+
       </form>
     );
   }

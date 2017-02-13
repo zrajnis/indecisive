@@ -1,5 +1,5 @@
 const router = require('express').Router();
-let User = require('../models/User');
+const User = require('../models/User');
 
 router.get('/', (req, res) => {
   res.render('index', { name: 'Indecisive' });
@@ -12,13 +12,19 @@ router.post('/signup', (req,res) => {
     lowercaseUsername: newUser.username.toLowerCase()
   }, (err, user) => {
     if (err)throw err;
-    if (user) console.log('user exists');
+    if (user){
+      console.log('user exists');
+      res.json({result: 'username taken'});
+    }
     else { //if username is not taken check if email is already in use
       User.findOne({
         email: newUser.email.toLowerCase()
       }, (err, user) => {
         if (err) throw err;
-        if (user) console.log('email is already in use');
+        if (user){
+          console.log('email is already in use');
+          res.json({result: 'email in use'});
+        }
         else {
           const newUserModel = new User({
             username: newUser.username,
@@ -27,14 +33,15 @@ router.post('/signup', (req,res) => {
             email: newUser.email.toLowerCase(),
             admin: false
           });
-          newUserModel.save(function (err) {
+          newUserModel.save( (err) => {
             if (err) throw err;
           });
           console.log('User registered successfully');
+          res.json({result: 'success'});
+
         }
       })
     }
-    res.render('index', {name: 'Indecisive'});
   });
 });
 
