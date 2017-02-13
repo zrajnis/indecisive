@@ -7,7 +7,7 @@ let form = reduxForm({
   fields: ['username', 'email', 'password'],
   validate
 });
-//TODO: check if type is necessary fix modal height
+
 const renderField = ({ input, type, meta: { touched, error } }) => (
   <div className="inputWrapper">
     <input {...input} type={type} />
@@ -46,17 +46,26 @@ class SignupForm extends React.Component {
 
 function validate(formProps) {
   const errors = {};
+  const usernameRegex =  /^[a-zA-Z0-9.\s]{2,16}$/;
+  const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const passwordRegex =  /^[\s\S]{4,16}$/;
 
   if (!formProps.username) {
     errors.username = 'Please enter the username';
   }
+  else if(!usernameRegex.test(formProps.username)){
+    errors.username = 'Invalid username entered';
+  }
 
-  if (!formProps.email) {
+  if (!formProps.email || !emailRegex.test(formProps.email)) {
     errors.email = 'Please enter a valid email';
   }
 
   if (!formProps.password) {
     errors.password = 'Please enter a password';
+  }
+  else if(!passwordRegex.test(formProps.password)){
+    errors.password = 'Must be 4-16 characters long';
   }
   return errors;
 
