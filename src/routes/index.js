@@ -1,9 +1,8 @@
 const router = require('express').Router();
-const mongoose=require('mongoose');
 let User = require('../models/User');
 
 router.get('/', (req, res) => {
-  res.render('index', { name: 'John' });
+  res.render('index', { name: 'Indecisive' });
 });
 
 router.post('/signup', (req,res) => {
@@ -35,7 +34,7 @@ router.post('/signup', (req,res) => {
         }
       })
     }
-    res.render('index', {name: 'John'});
+    res.render('index', {name: 'Indecisive'});
   });
 });
 

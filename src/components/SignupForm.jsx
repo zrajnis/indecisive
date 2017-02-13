@@ -7,7 +7,13 @@ let form = reduxForm({
   fields: ['username', 'email', 'password'],
   validate
 });
-
+//TODO: check if type is necessary fix modal height
+const renderField = ({ input, type, meta: { touched, error } }) => (
+  <div className="inputWrapper">
+    <input {...input} type={type} />
+    {touched && error && <div className="error">{error}</div>}
+  </div>
+);
 
 class SignupForm extends React.Component {
 
@@ -27,17 +33,11 @@ class SignupForm extends React.Component {
     return (
       <form id="signupForm" onSubmit={this.props.handleSubmit(this.handleFormSubmit.bind(this))}>
         <label htmlFor="signupUsername">Choose the username:</label>
-        <div className="inputWrapper">
-          <Field name="username" type="text" id="signupUsername" component="input" />
-        </div>
+        <Field name="username" type="text" id="signupUsername" component={renderField} />
         <label htmlFor="signupEmail">Enter the email:</label>
-        <div className="inputWrapper">
-          <Field name="email" type="email" id="signupEmail" component="input" />
-         </div>
+        <Field name="email" type="email" id="signupEmail" component={renderField} />
         <label htmlFor="signupEmail">Enter the password:</label>
-        <div className="inputWrapper">
-          <Field name="password" type="password" id="signupPassword" component="input" />
-        </div>
+        <Field name="password" type="password" id="signupPassword" component={renderField} />
         <button type="submit" id="signupBtn">Sign Up!</button>
       </form>
     );
@@ -52,7 +52,7 @@ function validate(formProps) {
   }
 
   if (!formProps.email) {
-    errors.email = 'Please enter an email';
+    errors.email = 'Please enter a valid email';
   }
 
   if (!formProps.password) {

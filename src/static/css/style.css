@@ -149,3 +149,7 @@ form{
 label{
   color: #233237;
 }
+
+.error{
+  color: red;
+}
