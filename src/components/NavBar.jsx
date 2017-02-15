@@ -1,27 +1,37 @@
 import React from 'react';
 import Modal from './Modal.jsx';
 import SignupForm from './SignupForm.jsx';
+import LoginForm from './LoginForm.jsx';
 
 class NavBar extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      isModalOpen: false,
+      isSignupModalOpen: false,
+      isLoginModalOpen: false,
       didRegister: false
     };
 
   };
-  openModal() {
-    this.setState({ isModalOpen: true })
+  openSignupModal() {
+    this.setState({ isSignupModalOpen: true })
   }
 
-  closeModal() {
-    this.setState({ isModalOpen: false });
+  closeSignupModal() {
+    this.setState({ isSignupModalOpen: false });
   }
 
-  changeModal() {
+  changeSignupModal() {
     this.setState({ didRegister: true });
+  }
+
+  openLoginModal() {
+    this.setState({ isLoginModalOpen: true })
+  }
+
+  closeLoginModal() {
+    this.setState({ isLoginModalOpen: false });
   }
 
   render() {
@@ -40,26 +50,35 @@ class NavBar extends React.Component {
               <button type="submit" id="searchBtn">
               </button>
             </form>
-            <button type="button" id="login">Log in</button>
-            <button type="button" id="signup" onClick={() => this.openModal()}>Sign Up</button>
+            <button type="button" id="login" onClick={() => this.openLoginModal()}>Log in</button>
+            <button type="button" id="signup" onClick={() => this.openSignupModal()}>Sign up</button>
           </div>
         </nav>
 
-        <Modal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
-          <button className="cancelBtn" onClick={() => this.closeModal()}>x</button>
+        <Modal id="signupModal" isOpen={this.state.isSignupModalOpen} onClose={() => this.closeSignupModal()}>
+          <button className="cancelBtn" onClick={() => this.closeSignupModal()}>x</button>
           {this.state.didRegister ?
             <div className="modalContent" id="registrationSuccess">
               <h1>Account Registered!</h1>
               <p className="message">You have successfully registered your account.</p>
               <p className="message">Log into the account to enjoy all the perks registered users get.</p>
-              <button className="closeBtn" onClick={() => this.closeModal()}>Close</button>
+              <button className="closeBtn" onClick={() => this.closeSignupModal()}>Close</button>
             </div>
             :
-            <div className="modalContent">
-              <h1>Sign Up!</h1>
-              <SignupForm onSuccess={() => this.changeModal()}/>
+            <div id="signupModalContent">
+              <h1 id="signupTitle">Sign up!</h1>
+              <SignupForm onSuccess={() => this.changeSignupModal()}/>
             </div>
           }
+        </Modal>
+
+        <Modal id="loginModal" isOpen={this.state.isLoginModalOpen} onClose={() => this.closeLoginModal()}>
+          <button className="cancelBtn" onClick={() => this.closeLoginModal()}>x</button>
+          <div id="loginModalContent">
+            <h1 id="loginTitle">Log in!</h1>
+            <LoginForm />
+          </div>
+
         </Modal>
       </div>
       

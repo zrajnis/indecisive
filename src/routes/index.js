@@ -45,4 +45,23 @@ router.post('/signup', (req,res) => {
   });
 });
 
+router.post('/login', (req,res) => {
+  const userData = req.body.userData;
+  console.log(userData);
+  User.findOne({
+    lowercaseUsername: userData.username.toLowerCase(),
+    password: userData.password
+  }, (err, user) => {
+    if (err)throw err;
+    if (user){
+      console.log('user exists');
+      res.json({result: 'Success'});
+    }
+    else {
+      console.log('Login failed');
+      res.json({result: 'Login failed'});
+    }
+  });
+});
+
 module.exports = router;

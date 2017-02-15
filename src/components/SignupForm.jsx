@@ -1,12 +1,12 @@
 import React from 'react';
 import {Field, reduxForm} from 'redux-form';
-import {serverResponse} from '../actions/Signup';
+import {serverResponse, clearErrorMsg} from '../actions/Signup';
 const {connect} = require('react-redux');
 
 let form = reduxForm({
   form: 'SignupReduxForm',
   fields: ['username', 'email', 'password'],
-  serverResponse : '',
+  errorMsg : '',
   validate
 });
 
@@ -19,6 +19,10 @@ const renderField = ({input, type, meta: {touched, error}}) => (
 
 class SignupForm extends React.Component {
 
+  componentWillUnmount() {
+    this.props.dispatch(clearErrorMsg());
+  }
+
   handleFormSubmit(formProps) {
     fetch('/signup', {
       method: 'POST',
@@ -30,7 +34,7 @@ class SignupForm extends React.Component {
       })
     }).then((response) => {
       response.json().then((data) =>{
-        if(data.result === 'Success'){
+        if(data.result === 'Success') {
           this.props.onSuccess();
         }
         else{
@@ -47,10 +51,10 @@ class SignupForm extends React.Component {
         <Field name="username" type="text" id="signupUsername"  component={renderField} />
         <label htmlFor="signupEmail">Enter the email:</label>
         <Field name="email" type="email" id="signupEmail" component={renderField} />
-        <label htmlFor="signupEmail">Enter the password:</label>
+        <label htmlFor="signupPassword">Enter the password:</label>
         <Field name="password" type="password" id="signupPassword" component={renderField} />
-        <button type="submit" id="signupBtn">Sign Up!</button>
-        <div className="serverResponse">{this.props.serverResponse}</div>
+        <button type="submit" id="signupBtn">Sign up!</button>
+        <div className="serverResponse">{this.props.errorMsg}</div>
       </form>
     );
   }
@@ -61,18 +65,18 @@ function validate(formProps) {
   const usernameRegex =  /^[a-zA-Z0-9_\s]{2,16}$/;
   const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const passwordRegex =  /^[\s\S]{4,16}$/;
-  if (!formProps.username) {
+  if(!formProps.username) {
     errors.username = 'Please enter the username';
   }
   else if(!usernameRegex.test(formProps.username)){
     errors.username = 'Invalid username entered';
   }
 
-  if (!formProps.email || !emailRegex.test(formProps.email)) {
+  if(!formProps.email || !emailRegex.test(formProps.email)) {
     errors.email = 'Please enter a valid email';
   }
 
-  if (!formProps.password) {
+  if(!formProps.password) {
     errors.password = 'Please enter a password';
   }
   else if(!passwordRegex.test(formProps.password)){
@@ -85,11 +89,11 @@ function validate(formProps) {
 const mapStateToProps = (state) => {
   if(state.Signup !== null){
     return {
-      serverResponse: state.Signup.response
+      errorMsg: state.Signup.error
     };
   }
   else{
-    return {serverResponse: ''}
+    return {errorMsg: ''}
   }
 };
 
