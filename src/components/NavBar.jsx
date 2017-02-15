@@ -42,7 +42,7 @@ class NavBar extends React.Component {
         <Modal isOpen={this.state.isModalOpen} onClose={() => this.closeModal()}>
           <button className="cancelBtn" onClick={() => this.closeModal()}>x</button>
           <h1>Sign Up!</h1>
-          <SignupForm/>
+          <SignupForm error="errorZZ"/>
         </Modal>
       </div>
 

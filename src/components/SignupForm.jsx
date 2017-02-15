@@ -1,10 +1,12 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import {Field, reduxForm} from 'redux-form';
+import {serverResponse} from '../actions/Signup';
 const {connect} = require('react-redux');
 
 let form = reduxForm({
   form: 'SignupReduxForm',
   fields: ['username', 'email', 'password'],
+  serverResponse : '',
   validate
 });
 
@@ -27,36 +29,23 @@ class SignupForm extends React.Component {
         newUser: formProps
       })
     }).then((response) => {
-      response.json().then((data) => {
-        switch(data.result){
-          case 'username taken':
-            alert('username taken');
-            break;
-          case 'email in use':
-            alert('email in use');
-            break;
-          case 'success':
-            alert('it was a success');
-            break;
-          default:
-            alert('something bad happened!');
-        }
+      response.json().then((data) =>{
+        this.props.dispatch(serverResponse(data.result));
       });
     });
   }
-  
+
   render() {
     return (
       <form id="signupForm" onSubmit={this.props.handleSubmit(this.handleFormSubmit.bind(this))}>
         <label htmlFor="signupUsername">Choose the username:</label>
-        <Field name="username" type="text" id="signupUsername" component={renderField} />
+        <Field name="username" type="text" id="signupUsername"  component={renderField} />
         <label htmlFor="signupEmail">Enter the email:</label>
         <Field name="email" type="email" id="signupEmail" component={renderField} />
         <label htmlFor="signupEmail">Enter the password:</label>
         <Field name="password" type="password" id="signupPassword" component={renderField} />
         <button type="submit" id="signupBtn">Sign Up!</button>
-        <div className="error"> </div>
-
+        <div className="serverResponse">{this.props.serverResponse}</div>
       </form>
     );
   }
@@ -67,7 +56,6 @@ function validate(formProps) {
   const usernameRegex =  /^[a-zA-Z0-9.\s]{2,16}$/;
   const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const passwordRegex =  /^[\s\S]{4,16}$/;
-
   if (!formProps.username) {
     errors.username = 'Please enter the username';
   }
@@ -85,14 +73,20 @@ function validate(formProps) {
   else if(!passwordRegex.test(formProps.password)){
     errors.password = 'Must be 4-16 characters long';
   }
+
   return errors;
-
 }
 
-function mapStateToProps(state) { 
-  return {
-    user: state.user
-  };
-}
+const mapStateToProps = (state) => {
+  if(state.Signup !== null){
+    console.log('mapping');
+    return {
+      serverResponse: state.Signup.response
+    };
+  }
+  else{
+    return {serverResponse: ''}
+  }
+};
 
 export default connect(mapStateToProps)(form(SignupForm));

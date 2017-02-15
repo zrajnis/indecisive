@@ -150,6 +150,11 @@ label{
   color: #233237;
 }
 
-.error{
+.error, .serverResponse{
   color: red;
+}
+
+.serverResponse{
+  width:150px;
+  text-align:center;
 }
