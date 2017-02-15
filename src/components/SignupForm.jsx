@@ -10,7 +10,7 @@ let form = reduxForm({
   validate
 });
 
-const renderField = ({ input, type, meta: { touched, error } }) => (
+const renderField = ({input, type, meta: {touched, error}}) => (
   <div className="inputWrapper">
     <input {...input} type={type} />
     {touched && error && <div className="error">{error}</div>}
@@ -30,7 +30,12 @@ class SignupForm extends React.Component {
       })
     }).then((response) => {
       response.json().then((data) =>{
-        this.props.dispatch(serverResponse(data.result));
+        if(data.result === 'Success'){
+          this.props.onSuccess();
+        }
+        else{
+          this.props.dispatch(serverResponse(data.result));
+        }
       });
     });
   }
@@ -53,7 +58,7 @@ class SignupForm extends React.Component {
 
 function validate(formProps) {
   const errors = {};
-  const usernameRegex =  /^[a-zA-Z0-9.\s]{2,16}$/;
+  const usernameRegex =  /^[a-zA-Z0-9_\s]{2,16}$/;
   const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const passwordRegex =  /^[\s\S]{4,16}$/;
   if (!formProps.username) {
@@ -79,7 +84,6 @@ function validate(formProps) {
 
 const mapStateToProps = (state) => {
   if(state.Signup !== null){
-    console.log('mapping');
     return {
       serverResponse: state.Signup.response
     };

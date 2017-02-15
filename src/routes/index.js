@@ -14,7 +14,7 @@ router.post('/signup', (req,res) => {
     if (err)throw err;
     if (user){
       console.log('user exists');
-      res.json({result: 'username taken'});
+      res.json({result: 'Username is not available'});
     }
     else { //if username is not taken check if email is already in use
       User.findOne({
@@ -23,7 +23,7 @@ router.post('/signup', (req,res) => {
         if (err) throw err;
         if (user){
           console.log('email is already in use');
-          res.json({result: 'email in use'});
+          res.json({result: 'Email is already in use'});
         }
         else {
           const newUserModel = new User({
@@ -37,7 +37,7 @@ router.post('/signup', (req,res) => {
             if (err) throw err;
           });
           console.log('User registered successfully');
-          res.json({result: 'success'});
+          res.json({result: 'Success'});
 
         }
       })
