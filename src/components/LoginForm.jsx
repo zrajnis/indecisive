@@ -30,7 +30,8 @@ class LoginForm extends React.Component {
         },
         body: JSON.stringify({
           userData: formProps
-        })
+        }),
+        credentials: 'same-origin'
       }).then((response) => {
         response.json().then((data) =>{
           if(data.result === 'Success'){

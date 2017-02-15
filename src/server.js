@@ -2,34 +2,42 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const http = require('http').Server(app);
-const React = require('react');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const routes = require('./routes');
 const indexRoutes = require('./routes/index');
+const userRoutes = require('./routes/user');
 const config = require('./config.js');
-let User = require('./models/User');
-let Dilemma = require('./models/Dilemma');
 
 app.set('port', process.env.PORT || 3000);
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 
+const options={ server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },replset: { socketOptions:
+{ keepAlive: 300000, connectTimeoutMS : 30000 } } };
+
+mongoose.connect(config.database,options); // connect to database
+
+app.set('superSecret', config.secret); // secret variable
+
 //use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(cookieParser());
+
 //set routes
 app.use('/', indexRoutes);
+app.use('/user', userRoutes);
 
 app.use(express.static(path.join(__dirname, 'static')));
 
-const options={ server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },replset: { socketOptions:
-{ keepAlive: 300000, connectTimeoutMS : 30000 } } };
-mongoose.connect(config.database,options); // connect to database
+app.get('/user/test', (req, res) => {
+  res.render('index', { name: 'Indecisive' });
+});
 
-app.set('superSecret', config.secret); // secret variable
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   const err = new Error('Not Found');
