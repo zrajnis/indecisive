@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 router.get('/', (req, res) => {
@@ -54,7 +55,12 @@ router.post('/login', (req,res) => {
   }, (err, user) => {
     if (err)throw err;
     if (user){
-      console.log('user exists');
+      const token = jwt.sign(user, req.app.get('superSecret'),{
+        expiresIn : '24h' //expires in 24 hours
+      });
+      res.cookie('token', token, {expires: new Date(Date.now() + 86400000)});//86400000 miliseconds is 24 hours
+      res.cookie('id', user._id, {expires: new Date(Date.now() + 86400000)});
+      console.log('login successful!');
       res.json({result: 'Success'});
     }
     else {
