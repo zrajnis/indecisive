@@ -19,11 +19,18 @@ h1{
   background: #233237;
 }
 
-input{
+input, button{
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+input{
   color: #233237;
+}
+
+button{
+  border-radius: 3px;
 }
 
 ul{
@@ -71,8 +78,8 @@ li a:hover {
   text-align: center;
 }
 
-#loginBtn,#signupBtn{
-  border:none;
+#loginBtn, #signupBtn{
+  border: none;
   height: 24px;
   vertical-align: bottom;
   margin-top:10px;
@@ -83,6 +90,10 @@ li a:hover {
 
 #signupBtn{
   margin-left: 42px;
+}
+
+#loginBtn{
+  margin-left: 49px;
 }
 
 #searchBar{
@@ -123,8 +134,12 @@ form{
   display: inline-block;
 }
 
-#signupForm{
-  margin-left:150px;
+#signupForm, #loginForm{
+  margin-left: 150px;
+}
+
+#settingsContainer{
+  margin-left: 122px;
 }
 
 .inputWrapper > input{
@@ -134,6 +149,12 @@ form{
   vertical-align: top;
   padding-left: 10px;
   border: 1px solid #c06014;
+}
+
+.settingsInput{
+  border-top-right-radius: 0!important;
+  border-bottom-right-radius: 0!important;
+  border-right: none!important;
 }
 
 .cancelBtn{
@@ -167,6 +188,20 @@ label{
   width: 50px;
   margin-left: 200px;
   margin-top: 70px;
+}
+
+.changeBtn{
+  width: 58px;
+  background: #c06014;
+  color:  #233237;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border: 1px solid #c06014;
+  border-left: none;
+}
+#closeSettingsBtn{
+  margin-right: 30px;
+  float: right;
 }
 
 #registrationSuccess{

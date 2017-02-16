@@ -52,7 +52,7 @@ class SignupForm extends React.Component {
         <Field name="email" type="email" id="signupEmail" component={renderField} />
         <label htmlFor="signupPassword">Enter the password:</label>
         <Field name="password" type="password" id="signupPassword" component={renderField} />
-        <button type="submit" id="signupBtn">Sign up!</button>
+        <button type="submit" id="signupBtn">Sign up</button>
         <div className="serverResponse">{this.props.errorMsg}</div>
       </form>
     );

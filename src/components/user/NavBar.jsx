@@ -51,6 +51,8 @@ class NavBar extends React.Component {
           <div id="settingsModalContainer">
             <h1 id="settingsTitle">Settings</h1>
             <SettingsForm />
+            <button type="button" id="closeSettingsBtn" className="closeBtn" onClick={() => this.closeModal()}>
+              Close</button>
           </div>
         </Modal>
       </div>

@@ -21,7 +21,7 @@ class LoginForm extends React.Component {
   }
 
   handleFormSubmit(formProps) {
-    if(formProps.username.trim() && formProps.password.trim()){
+    if(formProps.username && formProps.username.trim() && formProps.password && formProps.password.trim()){
       fetch('/login', {
         method: 'POST',
         headers: {
@@ -49,12 +49,12 @@ class LoginForm extends React.Component {
 
   render() {
     return (
-      <form id="signupForm" onSubmit={this.props.handleSubmit(this.handleFormSubmit.bind(this))}>
+      <form id="loginForm" onSubmit={this.props.handleSubmit(this.handleFormSubmit.bind(this))}>
         <label htmlFor="loginUsername">Choose the username:</label>
         <Field name="username" type="text" id="loginUsername"  component={renderField} />
         <label htmlFor="loginPassword">Enter the password:</label>
         <Field name="password" type="password" id="loginPassword" component={renderField} />
-        <button type="submit" id="signupBtn">Sign Up!</button>
+        <button type="submit" id="loginBtn">Log in</button>
         <div className="serverResponse">{this.props.errorMsg}</div>
       </form>
     );

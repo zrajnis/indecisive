@@ -27,6 +27,7 @@ class Settings extends React.Component {
           switch(data.result ){
             case 'Success':
               console.log('Success');
+              input.value = '';
               break;
             case 'Username is not available':
               console.log('username change');
@@ -47,16 +48,15 @@ class Settings extends React.Component {
 
   render() {
     return (
-      <form id="signupForm" >
+      <div id="settingsContainer" >
         <label htmlFor="changeUsername">Change the username:</label>
         <SettingsField id="changeUsername" type="text" errorMsg={this.props.errorMsg.username} changeData={this.changeData}/>
         <label htmlFor="changeEmail">Change the email:</label>
         <SettingsField id="changeEmail" type="email" errorMsg={this.props.errorMsg.email} changeData={this.changeData}/>
         <label htmlFor="changePassword">Change the password:</label>
         <SettingsField id="changePassword" type="password" errorMsg={this.props.errorMsg.password} changeData={this.changeData}/>
-        <button type="submit" className="closeBtn">Close</button>
         <div className="serverResponse">{this.props.errorMsg}</div>
-      </form>
+      </div>
     );
   }
 }
