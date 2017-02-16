@@ -21,7 +21,7 @@ class LoginForm extends React.Component {
   }
 
   handleFormSubmit(formProps) {
-    if(formProps.username && formProps.password){
+    if(formProps.username.trim() && formProps.password.trim()){
       fetch('/login', {
         method: 'POST',
         headers: {
