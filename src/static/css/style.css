@@ -172,3 +172,11 @@ label{
 #registrationSuccess{
   margin-top: 70px;
 }
+
+#loginTitle{
+  margin-top: 75px;
+}
+
+#signupTitle, #settingsTitle{
+  margin-top: 32px;
+}
