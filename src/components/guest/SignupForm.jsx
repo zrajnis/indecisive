@@ -1,6 +1,6 @@
 import React from 'react';
 import {Field, reduxForm} from 'redux-form';
-import {serverResponse, clearErrorMsg} from '../actions/Signup';
+import {serverResponse, clearErrorMsg} from '../../actions/Signup';
 const {connect} = require('react-redux');
 
 let form = reduxForm({
@@ -62,7 +62,7 @@ class SignupForm extends React.Component {
 
 function validate(formProps) {
   const errors = {};
-  const usernameRegex =  /^[a-zA-Z0-9_\s]{2,16}$/;
+  const usernameRegex =  /^[a-zA-Z0-9_]{2,16}$/;
   const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const passwordRegex =  /^[\s\S]{4,16}$/;
   if(!formProps.username) {
@@ -77,7 +77,7 @@ function validate(formProps) {
   }
 
   if(!formProps.password) {
-    errors.password = 'Please enter a password';
+    errors.password = 'Please enter the password';
   }
   else if(!passwordRegex.test(formProps.password)){
     errors.password = 'Must be 4-16 characters long';
