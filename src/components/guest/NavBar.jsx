@@ -4,7 +4,6 @@ import SignupForm from './SignupForm.jsx';
 import LoginForm from './LoginForm.jsx';
 
 class NavBar extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -12,8 +11,8 @@ class NavBar extends React.Component {
       isLoginModalOpen: false,
       didRegister: false
     };
-
   };
+  
   openSignupModal() {
     this.setState({ isSignupModalOpen: true })
   }

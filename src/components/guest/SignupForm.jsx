@@ -18,7 +18,6 @@ const renderField = ({input, type, meta: {touched, error}}) => (
 );
 
 class SignupForm extends React.Component {
-
   componentWillUnmount() {
     this.props.dispatch(clearErrorMsg());
   }

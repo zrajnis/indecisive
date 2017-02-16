@@ -3,14 +3,13 @@ import Modal from '../Modal.jsx';
 import Settings from './Settings.jsx';
 
 class NavBar extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       isModalOpen: false
     };
-
   };
+  
   openModal() {
     this.setState({ isModalOpen: true })
   }

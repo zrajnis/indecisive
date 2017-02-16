@@ -6,7 +6,6 @@ class User extends React.Component {
     return (
       <div className="container">
         <NavBar/>
-        ubijse
       </div>
     );
   }

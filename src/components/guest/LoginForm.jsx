@@ -16,7 +16,6 @@ const renderField = ({input, type}) => (
 );
 
 class LoginForm extends React.Component {
-
   componentWillUnmount() {
     this.props.dispatch(clearErrorMsg());
   }
@@ -35,8 +34,7 @@ class LoginForm extends React.Component {
       }).then((response) => {
         response.json().then((data) =>{
           if(data.result === 'Success'){
-            console.log('it should log in');
-            //this.props.onSuccess();
+            window.location.href='http://localhost:3000/user';
           }
           else{
             this.props.dispatch(serverResponse(data.result));

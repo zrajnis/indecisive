@@ -1,8 +1,8 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore, applyMiddleware, compose, combineReducers  } from 'redux';
-import { Router, Route, browserHistory } from 'react-router'
+import React from 'react';
+import {render} from 'react-dom';
+import {Provider} from 'react-redux';
+import {createStore, applyMiddleware, compose} from 'redux';
+import {Router, Route, browserHistory} from 'react-router';
 import thunk from 'redux-thunk';
 import App from './reducers/App';
 import Guest from './components/guest/Guest.jsx';
@@ -13,7 +13,6 @@ let store = createStore(App,
     applyMiddleware(thunk),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   ));
-
 
 render(
   <Provider store={store}>
