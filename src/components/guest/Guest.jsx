@@ -1,7 +1,7 @@
 import React from 'react';
 import NavBar from './NavBar.jsx';
 
-class Container extends React.Component {
+class Guest extends React.Component {
   render() {
     return (
       <div className="container">
@@ -11,4 +11,4 @@ class Container extends React.Component {
   }
 }
 
-export default Container;
+export default Guest;

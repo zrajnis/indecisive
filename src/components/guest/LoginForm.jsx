@@ -1,6 +1,6 @@
 import React from 'react';
 import {Field, reduxForm} from 'redux-form';
-import {serverResponse, loginFailure, clearErrorMsg} from '../actions/Login';
+import {serverResponse, loginFailure, clearErrorMsg} from '../../actions/Login';
 const {connect} = require('react-redux');
 
 let form = reduxForm({

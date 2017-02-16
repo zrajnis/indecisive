@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from './Modal.jsx';
+import Modal from '../Modal.jsx';
 import SignupForm from './SignupForm.jsx';
 import LoginForm from './LoginForm.jsx';
 
@@ -78,10 +78,8 @@ class NavBar extends React.Component {
             <h1 id="loginTitle">Log in!</h1>
             <LoginForm />
           </div>
-
         </Modal>
       </div>
-      
     );
   }
 }
