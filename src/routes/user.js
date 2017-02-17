@@ -6,13 +6,13 @@ const User = require('../models/User');
 router.use((req, res, next) => {
   console.log('middleware active');
   //check header or url parameters or post parameters for token
-  const token=req.cookies['token'];
+  const token = req.cookies['token'];
   console.log('x-access-token read is '+token);
   //decode token
   if(token){
     //verifies secret and checks exp
-    jwt.verify(token, req.app.get('superSecret'), (err, decoded) =>{
-      if(err){
+    jwt.verify(token, req.app.get('superSecret'), (err, decoded) => {
+      if(err) {
         res.clearCookie('token');//remove the token
         return res.json({success: false, message: 'Failed to authenticate token.'});
 
@@ -41,12 +41,12 @@ router.post('/settings', (req, res) => {
       User.findOne({
         lowercaseUsername: data.toLowerCase()
       }, (err, user) => {
-        if (err)throw err;
-        if (user) {
+        if(err) throw err;
+        if(user) {
           console.log('username is already taken');
           res.json({result: 'Username is not available'});
         }
-        else{
+        else {
           User.findOneAndUpdate({
               '_id':req.cookies['id']
             },{$set: {'username': data, 'lowercaseUsername': data.toLowerCase()}},
@@ -61,12 +61,12 @@ router.post('/settings', (req, res) => {
       User.findOne({
         email: data.toLowerCase()
       }, (err, user) => {
-        if (err)throw err;
-        if (user) {
+        if(err) throw err;
+        if(user) {
           console.log('Email is already in use');
           res.json({result: 'Email is already in use'});
         }
-        else{
+        else {
           User.findOneAndUpdate({
               '_id':req.cookies['id']
             },{$set: {'email': data.toLowerCase()}},

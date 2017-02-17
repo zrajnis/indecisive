@@ -36,7 +36,7 @@ class SignupForm extends React.Component {
         if(data.result === 'Success') {
           this.props.onSuccess();
         }
-        else{
+        else {
           this.props.dispatch(serverResponse(data.result));
         }
       });
@@ -67,7 +67,7 @@ function validate(formProps) {
   if(!formProps.username) {
     errors.username = 'Please enter the username';
   }
-  else if(!usernameRegex.test(formProps.username)){
+  else if(!usernameRegex.test(formProps.username)) {
     errors.username = 'Invalid username entered';
   }
 
@@ -78,7 +78,7 @@ function validate(formProps) {
   if(!formProps.password) {
     errors.password = 'Please enter the password';
   }
-  else if(!passwordRegex.test(formProps.password)){
+  else if(!passwordRegex.test(formProps.password)) {
     errors.password = 'Must be 4-16 characters long';
   }
 
@@ -86,12 +86,12 @@ function validate(formProps) {
 }
 
 const mapStateToProps = (state) => {
-  if(state.Signup !== null){
+  if(state.Signup !== null) {
     return {
       errorMsg: state.Signup.error
     };
   }
-  else{
+  else {
     return {errorMsg: ''}
   }
 };

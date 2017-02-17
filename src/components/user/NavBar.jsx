@@ -32,7 +32,6 @@ class NavBar extends React.Component {
             <li><a href="/user/newest">Newest</a></li>
             <li><a href="/user/mine">Mine</a></li>
             <li><a href="/user/create">Create</a></li>
-            
           </ul>
           <div className="searchFormContainer">
             <form id="searchForm" href="#search">

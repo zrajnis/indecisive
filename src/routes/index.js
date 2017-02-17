@@ -12,8 +12,8 @@ router.post('/signup', (req,res) => {
   User.findOne({
     lowercaseUsername: newUser.username.toLowerCase()
   }, (err, user) => {
-    if (err)throw err;
-    if (user){
+    if(err) throw err;
+    if(user) {
       console.log('user exists');
       res.json({result: 'Username is not available'});
     }
@@ -21,8 +21,8 @@ router.post('/signup', (req,res) => {
       User.findOne({
         email: newUser.email.toLowerCase()
       }, (err, user) => {
-        if (err) throw err;
-        if (user){
+        if(err) throw err;
+        if(user) {
           console.log('email is already in use');
           res.json({result: 'Email is already in use'});
         }
@@ -35,7 +35,7 @@ router.post('/signup', (req,res) => {
             admin: false
           });
           newUserModel.save( (err) => {
-            if (err) throw err;
+            if(err) throw err;
           });
           console.log('User registered successfully');
           res.json({result: 'Success'});
@@ -53,8 +53,8 @@ router.post('/login', (req,res) => {
     lowercaseUsername: userData.username.toLowerCase(),
     password: userData.password
   }, (err, user) => {
-    if (err)throw err;
-    if (user){
+    if(err) throw err;
+    if(user) {
       const token = jwt.sign(user, req.app.get('superSecret'),{
         expiresIn : '24h' //expires in 24 hours
       });

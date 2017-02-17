@@ -5,17 +5,18 @@ const {connect} = require('react-redux');
 
 
 class Settings extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.changeData = this.changeData.bind(this);
   }
+
   componentWillUnmount() {
     this.props.dispatch(clearErrorMsg());
   }
 
   changeData(type, id) { // accepts type of input field from which we determine what kind of change it is,and value
     const input = document.getElementById(id);
-    if(input.value.trim()){
+    if(input.value.trim()) {
       fetch('/user/settings', {
         method: 'POST',
         headers: {
@@ -27,10 +28,11 @@ class Settings extends React.Component {
         }),
         credentials: 'same-origin'
       }).then((response) => {
-        response.json().then((data) =>{
-          switch(data.result ){
+        response.json().then((data) => {
+          switch(data.result ) {
             case 'Success':
               input.value = '';
+              this.props.dispatch(clearErrorMsg());
               break;
             case 'Username is not available':
               this.props.dispatch(serverUsernameResponse(data.result));
@@ -63,15 +65,14 @@ class Settings extends React.Component {
 
 
 const mapStateToProps = (state) => {
-  console.log(state);
-  if(state.Settings !== null){
+  if(state.Settings !== null) {
     return {
       usernameError: state.Settings.usernameError,
       emailError: state.Settings.emailError,
       passwordError: state.Settings.passwordError
     };
   }
-  else{
+  else {
     return {usernameError: '', emailError: '', passwordError: ''}
   }
 };
