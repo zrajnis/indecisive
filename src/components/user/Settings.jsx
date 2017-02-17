@@ -1,6 +1,8 @@
 import React from 'react';
-import {serverUsernameResponse, serverEmailResponse, clearErrorMsg} from '../../actions/Settings';
+import {serverUsernameResponse, serverEmailResponse, serverPasswordResponse, failedUsernameValidation,
+  failedEmailValidation, failedPasswordValidation, clearErrorMsg} from '../../actions/Settings';
 import SettingsField from './SettingsField.jsx';
+const validate = require('../../validator').validateSettings;
 const {connect} = require('react-redux');
 
 
@@ -16,7 +18,8 @@ class Settings extends React.Component {
 
   changeData(type, id) { // accepts type of input field from which we determine what kind of change it is,and value
     const input = document.getElementById(id);
-    if(input.value.trim()) {
+    const error = validate(type, input.value);
+    if(input.value.trim() && !error) {
       fetch('/user/settings', {
         method: 'POST',
         headers: {
@@ -35,10 +38,15 @@ class Settings extends React.Component {
               this.props.dispatch(clearErrorMsg());
               break;
             case 'Username is not available':
+            case 'Invalid username entered':
               this.props.dispatch(serverUsernameResponse(data.result));
               break;
             case 'Email is already in use':
+            case 'Please enter a valid email':
               this.props.dispatch(serverEmailResponse(data.result));
+              break;
+            case 'Must be 4-16 characters long':
+              this.props.dispatch(serverPasswordResponse(data.result));
               break;
             default:
               console.log('something unexpected happened');
@@ -46,6 +54,22 @@ class Settings extends React.Component {
           }
         });
       });
+    }
+    else if(error) {
+      switch(type) {
+        case 'text':
+          this.props.dispatch(failedUsernameValidation(error));
+          break;
+        case 'email':
+          this.props.dispatch(failedEmailValidation(error));
+          break;
+        case 'password':
+          this.props.dispatch(failedPasswordValidation(error));
+          break;
+        default:
+          console.log('something unexpected happened');
+          break;
+      }
     }
   }
 
@@ -63,7 +87,6 @@ class Settings extends React.Component {
   }
 }
 
-
 const mapStateToProps = (state) => {
   if(state.Settings !== null) {
     return {
@@ -76,5 +99,6 @@ const mapStateToProps = (state) => {
     return {usernameError: '', emailError: '', passwordError: ''}
   }
 };
-
 export default connect(mapStateToProps)(Settings);
+
+

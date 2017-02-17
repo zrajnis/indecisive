@@ -15,7 +15,6 @@ router.use((req, res, next) => {
       if(err) {
         res.clearCookie('token');//remove the token
         return res.json({success: false, message: 'Failed to authenticate token.'});
-
       }
       else{
         //if everything is good,save to request for use in other routers
@@ -36,7 +35,7 @@ router.get('/', (req, res) => {
 router.post('/settings', (req, res) => {
   const data = req.body.value;
   const inputType = req.body.type;
-  switch(inputType){
+  switch(inputType) {
     case 'text':
       User.findOne({
         lowercaseUsername: data.toLowerCase()
