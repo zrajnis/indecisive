@@ -1,10 +1,14 @@
 import React from 'react';
-import {serverResponse, clearErrorMsg} from '../../actions/Settings';
+import {serverUsernameResponse, serverEmailResponse, clearErrorMsg} from '../../actions/Settings';
 import SettingsField from './SettingsField.jsx';
 const {connect} = require('react-redux');
 
 
 class Settings extends React.Component {
+  constructor(props){
+    super(props);
+    this.changeData = this.changeData.bind(this);
+  }
   componentWillUnmount() {
     this.props.dispatch(clearErrorMsg());
   }
@@ -26,16 +30,13 @@ class Settings extends React.Component {
         response.json().then((data) =>{
           switch(data.result ){
             case 'Success':
-              console.log('Success');
               input.value = '';
               break;
             case 'Username is not available':
-              console.log('username change');
-              this.props.dispatch(serverResponse(data.result));
+              this.props.dispatch(serverUsernameResponse(data.result));
               break;
             case 'Email is already in use':
-              console.log('email change');
-              this.props.dispatch(serverResponse(data.result));
+              this.props.dispatch(serverEmailResponse(data.result));
               break;
             default:
               console.log('something unexpected happened');
@@ -50,12 +51,11 @@ class Settings extends React.Component {
     return (
       <div id="settingsContainer" >
         <label htmlFor="changeUsername">Change the username:</label>
-        <SettingsField id="changeUsername" type="text" errorMsg={this.props.errorMsg.username} changeData={this.changeData}/>
+        <SettingsField id="changeUsername" type="text" errorMsg={this.props.usernameError} changeData={this.changeData}/>
         <label htmlFor="changeEmail">Change the email:</label>
-        <SettingsField id="changeEmail" type="email" errorMsg={this.props.errorMsg.email} changeData={this.changeData}/>
+        <SettingsField id="changeEmail" type="email" errorMsg={this.props.emailError} changeData={this.changeData}/>
         <label htmlFor="changePassword">Change the password:</label>
-        <SettingsField id="changePassword" type="password" errorMsg={this.props.errorMsg.password} changeData={this.changeData}/>
-        <div className="serverResponse">{this.props.errorMsg}</div>
+        <SettingsField id="changePassword" type="password" errorMsg={this.props.passwordError} changeData={this.changeData}/>
       </div>
     );
   }
@@ -63,13 +63,16 @@ class Settings extends React.Component {
 
 
 const mapStateToProps = (state) => {
+  console.log(state);
   if(state.Settings !== null){
     return {
-      errorMsg: state.Settings.error
+      usernameError: state.Settings.usernameError,
+      emailError: state.Settings.emailError,
+      passwordError: state.Settings.passwordError
     };
   }
   else{
-    return {errorMsg: ''}
+    return {usernameError: '', emailError: '', passwordError: ''}
   }
 };
 

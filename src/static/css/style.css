@@ -157,6 +157,11 @@ form{
   border-right: none!important;
 }
 
+.settingsInput:focus + button {
+  border-color: #233237;
+  border-left-color: #c06014;
+}
+
 .cancelBtn{
   position: relative;
   float: right;

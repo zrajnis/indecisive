@@ -21,7 +21,7 @@ class LoginForm extends React.Component {
   }
 
   handleFormSubmit(formProps) {
-    if(formProps.username && formProps.username.trim() && formProps.password && formProps.password.trim()){
+    if(formProps.username && formProps.username.trim() && formProps.password && formProps.password.trim()) {
       fetch('/login', {
         method: 'POST',
         headers: {
@@ -32,17 +32,17 @@ class LoginForm extends React.Component {
         }),
         credentials: 'same-origin'
       }).then((response) => {
-        response.json().then((data) =>{
-          if(data.result === 'Success'){
+        response.json().then((data) => {
+          if(data.result === 'Success') {
             window.location.href='http://localhost:3000/user';
           }
-          else{
+          else {
             this.props.dispatch(serverResponse(data.result));
           }
         });
       });
     }
-    else{
+    else {
       this.props.dispatch(loginFailure());
     }
   }
@@ -62,12 +62,12 @@ class LoginForm extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  if(state.Login !== null){
+  if(state.Login !== null) {
     return {
       errorMsg: state.Login.error
     };
   }
-  else{
+  else {
     return {errorMsg: ''}
   }
 };
