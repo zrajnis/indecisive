@@ -22,7 +22,7 @@ router.use((req, res, next) => {
     });
   }
   else {
-    return res.redirect('http://localhost:3000/error');
+    return res.redirect('http://localhost:3000');
   }
 });
 
@@ -98,6 +98,12 @@ router.delete('/settings', (req, res) => {
     res.clearCookie('id');
     res.json({message: 'success'});
   })
+});
+
+router.post('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.clearCookie('id');
+  res.json({message: 'success'});
 });
 
 module.exports = router;

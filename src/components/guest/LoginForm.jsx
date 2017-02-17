@@ -50,7 +50,7 @@ class LoginForm extends React.Component {
   render() {
     return (
       <form id="loginForm" onSubmit={this.props.handleSubmit(this.handleFormSubmit.bind(this))}>
-        <label htmlFor="loginUsername">Choose the username:</label>
+        <label htmlFor="loginUsername">Enter the username:</label>
         <Field name="username" type="text" id="loginUsername"  component={renderField} />
         <label htmlFor="loginPassword">Enter the password:</label>
         <Field name="password" type="password" id="loginPassword" component={renderField} />
