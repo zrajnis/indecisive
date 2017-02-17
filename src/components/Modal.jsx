@@ -2,7 +2,7 @@ import React from 'react';
 
 class Modal extends React.Component {
   render() {
-    if (this.props.isOpen === false)
+    if(this.props.isOpen === false)
       return null;
 
     let modalStyle = {
@@ -42,7 +42,7 @@ class Modal extends React.Component {
   close(e) {
     e.preventDefault();
 
-    if (this.props.onClose) {
+    if(this.props.onClose) {
       this.props.onClose()
     }
   }

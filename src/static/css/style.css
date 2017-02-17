@@ -19,11 +19,18 @@ h1{
   background: #233237;
 }
 
-input{
+input, button, #deactivateContainer{
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+input{
   color: #233237;
+}
+
+button{
+  border-radius: 3px;
 }
 
 ul{
@@ -61,7 +68,7 @@ li a:hover {
   height:24px;
 }
 
-#login,#signup,.closeBtn{
+#login, #signup, .closeBtn, .changeBtn, #deactivateBtn, #confirmDeactivationBtn, #declineDeactivationBtn{
   height: 24px;
   vertical-align: top;
   border: none;
@@ -71,8 +78,8 @@ li a:hover {
   text-align: center;
 }
 
-#loginBtn,#signupBtn{
-  border:none;
+#loginBtn, #signupBtn{
+  border: none;
   height: 24px;
   vertical-align: bottom;
   margin-top:10px;
@@ -83,6 +90,10 @@ li a:hover {
 
 #signupBtn{
   margin-left: 42px;
+}
+
+#loginBtn{
+  margin-left: 49px;
 }
 
 #searchBar{
@@ -123,8 +134,12 @@ form{
   display: inline-block;
 }
 
-#signupForm{
-  margin-left:150px;
+#signupForm, #loginForm{
+  margin-left: 150px;
+}
+
+#settingsContainer{
+  margin-left: 122px;
 }
 
 .inputWrapper > input{
@@ -134,6 +149,17 @@ form{
   vertical-align: top;
   padding-left: 10px;
   border: 1px solid #c06014;
+}
+
+.settingsInput{
+  border-top-right-radius: 0!important;
+  border-bottom-right-radius: 0!important;
+  border-right: none!important;
+}
+
+.settingsInput:focus + button {
+  border-color: #233237;
+  border-left-color: #c06014;
 }
 
 .cancelBtn{
@@ -166,7 +192,20 @@ label{
 .closeBtn{
   width: 50px;
   margin-left: 200px;
-  margin-top: 70px;
+}
+
+.changeBtn{
+  width: 58px;
+  background: #c06014;
+  color:  #233237;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border: 1px solid #c06014;
+  border-left: none;
+}
+#closeSettingsBtn{
+  margin-right: 30px;
+  float: right;
 }
 
 #registrationSuccess{
@@ -179,4 +218,42 @@ label{
 
 #signupTitle, #settingsTitle{
   margin-top: 32px;
+}
+
+#deactivateBtn, #confirmDeactivationBtn{
+  background: red;
+  color: #eddbcd;
+}
+
+#declineDeactivationBtn{
+  background: royalblue;
+  color: #eddbcd;
+}
+
+#confirmDeactivationBtn{
+  margin-right: 6px;
+  margin-left: 52px;
+}
+
+#confirmDeactivationBtn, #declineDeactivationBtn{
+  width: 44px;
+}
+#deactivateContainer{
+  margin-top: 19px;
+  width: 208px;
+}
+
+#deactivateDecision{
+  text-align: center;
+}
+
+#deactivateConfirmationContainer{
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#deactivateConfirmationContainer{
+  border-radius: 3px;
+  border: 1px solid #c06014;
+  background: white;
 }
