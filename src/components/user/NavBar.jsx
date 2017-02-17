@@ -19,7 +19,15 @@ class NavBar extends React.Component {
   }
 
   logout() {
-    alert('should log out');
+    fetch('/user/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin'
+    }).then(() => {
+      window.location.href='http://localhost:3000';
+    });
   }
 
   render() {
