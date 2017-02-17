@@ -4,10 +4,8 @@ const User = require('../models/User');
 
 //middleware to verify the token
 router.use((req, res, next) => {
-  console.log('middleware active');
   //check header or url parameters or post parameters for token
   const token = req.cookies['token'];
-  console.log('x-access-token read is '+token);
   //decode token
   if(token){
     //verifies secret and checks exp
@@ -89,6 +87,17 @@ router.post('/settings', (req, res) => {
       res.json({result: 'Something unexpected happened'});
       break;
   }
+});
+
+router.delete('/settings', (req, res) => {
+  User.findOneAndRemove({
+    '_id': req.cookies['id']
+  }, (err) => {
+    if (err) throw err;
+    res.clearCookie('token');
+    res.clearCookie('id');
+    res.json({message: 'success'});
+  })
 });
 
 module.exports = router;

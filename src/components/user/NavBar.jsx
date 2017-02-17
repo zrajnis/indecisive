@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '../Modal.jsx';
-import SettingsForm from './Settings.jsx';
+import Settings from './Settings.jsx';
 
 class NavBar extends React.Component {
   constructor(props) {
@@ -49,7 +49,7 @@ class NavBar extends React.Component {
           <button className="cancelBtn" onClick={() => this.closeModal()}>x</button>
           <div id="settingsModalContainer">
             <h1 id="settingsTitle">Settings</h1>
-            <SettingsForm />
+            <Settings />
             <button type="button" id="closeSettingsBtn" className="closeBtn" onClick={() => this.closeModal()}>
               Close</button>
           </div>
