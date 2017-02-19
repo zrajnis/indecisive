@@ -68,7 +68,7 @@ const mapStateToProps = (state) => {
     };
   }
   else {
-    return {errorMsg: ''}
+    return {}
   }
 };
 

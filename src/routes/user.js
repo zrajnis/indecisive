@@ -96,14 +96,19 @@ router.delete('/settings', (req, res) => {
     if (err) throw err;
     res.clearCookie('token');
     res.clearCookie('id');
-    res.json({message: 'success'});
+    res.json({result: 'Success'});
   })
+});
+
+router.post('/createDilemma', (req, res) => {
+  console.log('received');
+  res.json({result: 'Success'});
 });
 
 router.post('/logout', (req, res) => {
   res.clearCookie('token');
   res.clearCookie('id');
-  res.json({message: 'success'});
+  res.json({result: 'Success'});
 });
 
 module.exports = router;

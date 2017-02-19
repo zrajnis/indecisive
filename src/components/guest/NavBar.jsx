@@ -36,7 +36,7 @@ class NavBar extends React.Component {
   render() {
     return (
       <div>
-        <nav className="navbar">
+        <nav className="navBar">
           <ul>
             <li><a className="active" href="/">Home</a></li>
             <li><a href="#hot">Hot</a></li>
@@ -49,12 +49,12 @@ class NavBar extends React.Component {
               <button type="submit" id="searchBtn">
               </button>
             </form>
-            <button type="button" id="login" onClick={() => this.openLoginModal()}>Log in</button>
-            <button type="button" id="signup" onClick={() => this.openSignupModal()}>Sign up</button>
+            <button type="button" className="navBarBtn" id="login" onClick={() => this.openLoginModal()}>Log in</button>
+            <button type="button" className="navBarBtn" id="signup" onClick={() => this.openSignupModal()}>Sign up</button>
           </div>
         </nav>
 
-        <Modal id="signupModal" isOpen={this.state.isSignupModalOpen} onClose={() => this.closeSignupModal()}>
+        <Modal className="modal" id="signupModal" backdropClassName="backdrop" isOpen={this.state.isSignupModalOpen} onClose={() => this.closeSignupModal()}>
           <button className="cancelBtn" onClick={() => this.closeSignupModal()}>x</button>
           {this.state.didRegister ?
             <div className="modalContent" id="registrationSuccess">
@@ -71,7 +71,7 @@ class NavBar extends React.Component {
           }
         </Modal>
 
-        <Modal id="loginModal" isOpen={this.state.isLoginModalOpen} onClose={() => this.closeLoginModal()}>
+        <Modal className="modal" backdropClassName="backdrop" id="loginModal" isOpen={this.state.isLoginModalOpen} onClose={() => this.closeLoginModal()}>
           <button className="cancelBtn" onClick={() => this.closeLoginModal()}>x</button>
           <div id="loginModalContent">
             <h1 id="loginTitle">Log in!</h1>

@@ -49,3 +49,26 @@ export function validateSignup(formProps) {
   return errors;
 }
 
+export function validateCreateDilemma(formProps) { 
+  const errors = {};
+  const titleRegex =  /^[\s\S]{2,64}$/;
+  const descriptionRegex = /^[\s\S]{0,240}$/;
+  const answerRegex = /^[\s\S]{2,64}$/;
+  if(!formProps.title) {
+    errors.title = 'Please enter the title';
+  }
+  else if(!titleRegex.test(formProps.title)) {
+    errors.title = 'Title must be 2-64 characters long';
+  }
+
+  if(!descriptionRegex.test(formProps.description)){
+    errors.description = 'Description is too long'
+  }
+  if(formProps.answer && !answerRegex.test(formProps.answer)) {
+    errors.answer = 'Answer must be 2-64 characters long';
+  }
+
+  console.log(errors);
+  return errors;
+
+}
