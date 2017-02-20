@@ -3,7 +3,7 @@ import {Field, reduxForm} from 'redux-form';
 import {resetAnswersArray} from '../../actions/CreateDilemma';
 const validate =  require('../../validator').validateCreateDilemma;
 const {connect} = require('react-redux');
-//TODO : figure a way to reset answer field
+
 let form = reduxForm({
   form: 'CreateDilemmaReduxForm',
   fields: ['title', 'description', 'answer'],
@@ -50,6 +50,7 @@ class CreateDilemmaForm extends React.Component {
     if(this.props.answersArray.length === 4){
       document.getElementById('addAnswersBtn').disabled = false;
     }
+    this.forceUpdate();
   }
 
   handleFormSubmit(formProps) {
@@ -59,10 +60,8 @@ class CreateDilemmaForm extends React.Component {
         console.log('works');
         this.props.answersArray.push(newAnswer);
         console.log(this.props.answersArray);
-        //document.getElementById('answerInput').value = '';
-      }
-      else{
-        console.log('1 letter rejected')
+        formProps.answer = '';
+        console.log(formProps);
       }
 
       if(this.props.answersArray.length === 5) { // Maximum allowed number of answers is 5 so,when reached disable button
