@@ -57,7 +57,6 @@ class CreateDilemmaForm extends React.Component {
     if(this.state.wasClicked){ //if user added an option
       let newAnswer = document.getElementById('answerInput').value;
       if(newAnswer.trim()) {
-        console.log('works');
         this.props.answersArray.push(newAnswer);
         console.log(this.props.answersArray);
         formProps.answer = '';
@@ -65,34 +64,43 @@ class CreateDilemmaForm extends React.Component {
       }
 
       if(this.props.answersArray.length === 5) { // Maximum allowed number of answers is 5 so,when reached disable button
-        console.log('should disable');
         document.getElementById('addAnswersBtn').disabled = true;
       }
 
       this.setState({wasClicked: false});
       return false;
     }
-
-    fetch('/user/createDilemma', { //otherwise user submitted the form and tried to create a playlist
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        dilemmaData: formProps
-      }),
-      credentials: 'same-origin'
-    }).then((response) => {
-      console.log('received');
-      response.json().then((data) =>{
-        if(data.result === 'Success') {
-          console.log('success')
-        }
-        else {
-          this.props.dispatch(serverResponse(data.result));
-        }
+    else{
+      fetch('/user/createDilemma', { //otherwise user submitted the form and tried to create a playlist
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          dilemmaData: {
+            title: formProps.title,
+            description: formProps.description,
+            answers: this.props.answersArray
+          }
+        }),
+        credentials: 'same-origin'
+      }).then((response) => {
+        console.log('received');
+        response.json().then((data) =>{
+          if(data.result === 'Dilemma created') {
+            console.log('success');
+            formProps.title = ''; //reset values but don't refresh the page
+            formProps.description = '';
+            formProps.answer = '';
+            this.props.dispatch(resetAnswersArray());
+          }
+          else {
+            this.props.dispatch(serverResponse(data.result));
+          }
+        });
       });
-    });
+    }
+    return false;
   }
 
   render() {

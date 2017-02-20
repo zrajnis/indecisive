@@ -34,6 +34,7 @@ router.post('/signup', (req,res) => {
             email: newUser.email.toLowerCase(),
             admin: false
           });
+          
           newUserModel.save( (err) => {
             if(err) throw err;
           });

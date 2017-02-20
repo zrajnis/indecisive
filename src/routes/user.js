@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Dilemma = require('../models/Dilemma');
 
 //middleware to verify the token
 router.use((req, res, next) => {
@@ -101,8 +102,35 @@ router.delete('/settings', (req, res) => {
 });
 
 router.post('/createDilemma', (req, res) => {
-  console.log('received');
-  res.json({result: 'Success'});
+  const newDilemma = req.body.dilemmaData;
+  let answerUpvotes = newDilemma.answers.slice(); //copy array by val
+  answerUpvotes.forEach((answer, index) => { //change all values to 0
+    answerUpvotes[index] = 0;
+  });
+  
+  User.findOne({
+    _id: req.cookies['id']
+  }, (err, user) => {
+    if (err) throw err;
+    if (user) {
+      const newDilemmaModel = new Dilemma({
+        title: newDilemma.title,
+        description: newDilemma.description,
+        answers: newDilemma.answers,
+        answerUpvotes: answerUpvotes,
+        userId: req.cookies['id']
+      });
+
+      newDilemmaModel.save((err) => {
+        if (err) throw err;
+      });
+      console.log('Dilemma created successfully');
+      res.json({result: 'Dilemma created'});
+    }
+    else {
+      res.json({result: 'User not found'});
+    }
+  });
 });
 
 router.post('/logout', (req, res) => {
