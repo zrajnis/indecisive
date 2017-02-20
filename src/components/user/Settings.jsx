@@ -124,7 +124,7 @@ const mapStateToProps = (state) => {
     };
   }
   else {
-    return {usernameError: '', emailError: '', passwordError: ''}
+    return {};
   }
 };
 export default connect(mapStateToProps)(Settings);

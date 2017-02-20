@@ -6,7 +6,8 @@ h1{
   color: #233237;
   text-align: center;
 }
-.navbar{
+
+.navBar{
   background: #c06014;
   width: 100%;
   height: 48px;
@@ -19,13 +20,13 @@ h1{
   background: #233237;
 }
 
-input, button, #deactivateContainer{
+input, button, #deactivateContainer, textarea, #answersList{
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
-input{
+input, textarea{
   color: #233237;
 }
 
@@ -68,7 +69,8 @@ li a:hover {
   height:24px;
 }
 
-#login, #signup, .closeBtn, .changeBtn, #deactivateBtn, #confirmDeactivationBtn, #declineDeactivationBtn{
+.navBarBtn,  .closeBtn, .changeBtn, #deactivateBtn, #confirmDeactivationBtn,
+#declineDeactivationBtn{
   height: 24px;
   vertical-align: top;
   border: none;
@@ -78,7 +80,7 @@ li a:hover {
   text-align: center;
 }
 
-#loginBtn, #signupBtn{
+#loginBtn, #signupBtn, #createDilemmaBtn{
   border: none;
   height: 24px;
   vertical-align: bottom;
@@ -104,7 +106,6 @@ li a:hover {
   vertical-align: top;
   padding-left: 10px;
   border: 1px solid #c06014;
- /*background: white url('../images/Search-icon.png') no-repeat 180px 4px;*/
 }
 
 #searchBar:focus, .inputWrapper>input:focus{
@@ -138,6 +139,10 @@ form{
   margin-left: 150px;
 }
 
+#createDilemmaForm{
+  margin-left:100px;
+}
+
 #settingsContainer{
   margin-left: 122px;
 }
@@ -151,18 +156,40 @@ form{
   border: 1px solid #c06014;
 }
 
-.settingsInput{
+textarea {
+  resize: none;
+  width: 250px;
+  height:96px;
+  border-radius: 3px;
+  border: 1px solid #c06014;
+  padding-left: 10px;
+}
+
+textarea:focus {
+  border-color: #233237;
+}
+
+textarea[name="title"]{
+  height: 48px;
+}
+
+
+.settingsInput, #answerInput{
   border-top-right-radius: 0!important;
   border-bottom-right-radius: 0!important;
   border-right: none!important;
 }
 
-.settingsInput:focus + button {
+.settingsInput:focus + button, #answerInput:focus + button {
   border-color: #233237;
   border-left-color: #c06014;
 }
 
-.cancelBtn{
+#answerInput {
+  width:192px;
+}
+
+.cancelBtn, .removeAnswerBtn{
   position: relative;
   float: right;
   border: none;
@@ -172,16 +199,30 @@ form{
   color: #233237;
 }
 
+.cancelBtn:hover, .removeAnswerBtn:hover{
+  color: black;
+}
+
+.removeAnswerBtn{
+  left: -20px;
+  top: -6px;
+}
+
 label{
   color: #233237;
 }
 
-.error, .serverResponse{
+.error, .serverResponse, .errorMsg{
   color: red;
 }
 
 .serverResponse{
   width: 150px;
+  text-align: center;
+}
+
+.errorMsg{
+  width: 250px;
   text-align: center;
 }
 
@@ -194,16 +235,24 @@ label{
   margin-left: 200px;
 }
 
-.changeBtn{
+.changeBtn, #addAnswersBtn{
   width: 58px;
   background: #c06014;
-  color:  #233237;
+  color: #233237;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border: 1px solid #c06014;
   border-left: none;
 }
-#closeSettingsBtn{
+
+#addAnswersBtn{
+  position: relative;
+  float: right;
+  height: 24px;
+  width: 58px;
+}
+
+#closeSettingsBtn, #cancelCreateBtn{
   margin-right: 30px;
   float: right;
 }
@@ -216,7 +265,7 @@ label{
   margin-top: 75px;
 }
 
-#signupTitle, #settingsTitle{
+#signupTitle, #settingsTitle, #createDilemmaTitle{
   margin-top: 32px;
 }
 
@@ -252,8 +301,64 @@ label{
   padding-right: 5px;
 }
 
+.modal, .createDilemmaModal{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 448px;
+  height: 348px;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background: #eddbcd;
+  border: 1px solid #c06014;
+}
+
+.createDilemmaModal{
+  height: 598px;
+}
+
+.backdrop{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.6);
+}
+
 #deactivateConfirmationContainer{
   border-radius: 3px;
   border: 1px solid #c06014;
   background: white;
+}
+
+#create{
+  background: #eddbcd;
+}
+
+button:disabled{
+  opacity: 0.25;
+}
+
+#answersList, #answersList li{
+  width: 250px;
+}
+
+#answersList{
+  overflow-y: auto;
+  height: 125px;
+}
+
+#answersList li{
+  padding-left: 10px;
+  word-wrap: break-word;
+  border-bottom: 1px solid #233237;
+  color: #233237;
+}
+
+.successMsg{
+  color: limegreen;
+  display: inline-block;
+  margin-left: 20px;
 }
