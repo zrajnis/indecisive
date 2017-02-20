@@ -103,11 +103,12 @@ router.delete('/settings', (req, res) => {
 
 router.post('/createDilemma', (req, res) => {
   const newDilemma = req.body.dilemmaData;
+  const timestamp = new Date().toLocaleString('en-GB');
   let answerUpvotes = newDilemma.answers.slice(); //copy array by val
   answerUpvotes.forEach((answer, index) => { //change all values to 0
     answerUpvotes[index] = 0;
   });
-  
+
   User.findOne({
     _id: req.cookies['id']
   }, (err, user) => {
@@ -118,6 +119,7 @@ router.post('/createDilemma', (req, res) => {
         description: newDilemma.description,
         answers: newDilemma.answers,
         answerUpvotes: answerUpvotes,
+        timestamp: timestamp,
         userId: req.cookies['id']
       });
 

@@ -3,6 +3,7 @@ export function validateSettings(type , value) {
   const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const passwordRegex =  /^[\s\S]{4,16}$/;
   let error = null;
+
   switch(type) {
     case 'text':
       if(!usernameRegex.test(value)) {
@@ -28,6 +29,7 @@ export function validateSignup(formProps) {
   const usernameRegex =  /^[a-zA-Z0-9_]{2,16}$/;
   const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const passwordRegex =  /^[\s\S]{4,16}$/;
+
   if(!formProps.username) {
     errors.username = 'Please enter the username';
   }
@@ -54,6 +56,7 @@ export function validateCreateDilemma(formProps) {
   const titleRegex =  /^[\s\S]{2,64}$/;
   const descriptionRegex = /^[\s\S]{0,240}$/;
   const answerRegex = /^[\s\S]{2,64}$/;
+
   if(!formProps.title) {
     errors.title = 'Please enter the title';
   }
@@ -61,14 +64,13 @@ export function validateCreateDilemma(formProps) {
     errors.title = 'Title must be 2-64 characters long';
   }
 
-  if(!descriptionRegex.test(formProps.description)){
+  if(!descriptionRegex.test(formProps.description)) {
     errors.description = 'Description is too long'
   }
+
   if(formProps.answer && !answerRegex.test(formProps.answer)) {
     errors.answer = 'Answer must be 2-64 characters long';
   }
 
-  console.log(errors);
   return errors;
-
 }

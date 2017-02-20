@@ -1,6 +1,7 @@
 import React from 'react';
 import {Field, reduxForm} from 'redux-form';
-import {resetAnswersArray} from '../../actions/CreateDilemma';
+import {resetAnswersArray, createDilemmaSuccess, createDilemmaFailure, clearDilemmaMessages}
+  from '../../actions/CreateDilemma';
 const validate =  require('../../validator').validateCreateDilemma;
 const {connect} = require('react-redux');
 
@@ -9,8 +10,10 @@ let form = reduxForm({
   fields: ['title', 'description', 'answer'],
   answersArray: [],
   errorMsg : '',
+  successMsg: '',
   validate
 });
+
 const renderField = ({input, name, meta: {touched, error}}) => (
   <div className="textareaWrapper">
     <textarea {...input} />
@@ -37,7 +40,7 @@ class CreateDilemmaForm extends React.Component {
   }
 
   componentWillUnmount() {
-    //this.props.dispatch(clearErrorMsg());
+    this.props.dispatch(clearDilemmaMessages());
     this.props.dispatch(resetAnswersArray());
   }
 
@@ -54,13 +57,10 @@ class CreateDilemmaForm extends React.Component {
   }
 
   handleFormSubmit(formProps) {
-    if(this.state.wasClicked){ //if user added an option
-      let newAnswer = document.getElementById('answerInput').value;
-      if(newAnswer.trim()) {
-        this.props.answersArray.push(newAnswer);
-        console.log(this.props.answersArray);
+    if(this.state.wasClicked) { //if user added an option
+      if(formProps.answer.trim()) {
+        this.props.answersArray.push(formProps.answer);
         formProps.answer = '';
-        console.log(formProps);
       }
 
       if(this.props.answersArray.length === 5) { // Maximum allowed number of answers is 5 so,when reached disable button
@@ -68,9 +68,8 @@ class CreateDilemmaForm extends React.Component {
       }
 
       this.setState({wasClicked: false});
-      return false;
     }
-    else{
+    else {
       fetch('/user/createDilemma', { //otherwise user submitted the form and tried to create a playlist
         method: 'POST',
         headers: {
@@ -85,18 +84,20 @@ class CreateDilemmaForm extends React.Component {
         }),
         credentials: 'same-origin'
       }).then((response) => {
-        console.log('received');
         response.json().then((data) =>{
           if(data.result === 'Dilemma created') {
-            console.log('success');
             formProps.title = ''; //reset values but don't refresh the page
             formProps.description = '';
             formProps.answer = '';
-            this.props.dispatch(resetAnswersArray());
+            document.getElementById('addAnswersBtn').disabled = false;
+            this.props.dispatch(createDilemmaSuccess(data.result), this.props.dispatch(resetAnswersArray()));
           }
           else {
-            this.props.dispatch(serverResponse(data.result));
+            this.props.dispatch(createDilemmaFailure(data.result));
           }
+          setTimeout(() => {
+            this.props.dispatch(clearDilemmaMessages());
+          }, 3000)
         });
       });
     }
@@ -119,16 +120,23 @@ class CreateDilemmaForm extends React.Component {
           this.removeAnswerFromArray(i)}>x</button></li>) : <li>No answers yet</li>}</ul>
         </div>
         <button type="submit" id="createDilemmaBtn" disabled={this.props.answersArray.length < 2}>Create</button>
-        <div className="serverResponse">{this.props.errorMsg}</div>
+        <span className="successMsg">{this.props.successMsg}</span>
+        <div className="errorMsg">{this.props.errorMsg}</div>
       </form>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  if(state.CreateDilemma !== null && state.CreateDilemma.error) {
+  if(state.CreateDilemma !== null && state.CreateDilemma.errorMsg) {
     return {
-      errorMsg: state.CreateDilemma.error
+      errorMsg: state.CreateDilemma.errorMsg
+    };
+  }
+  else if(state.CreateDilemma !== null && state.CreateDilemma.successMsg) { //if state of successmsg exists then answerarray does too since they're dispatched together
+    return {
+      successMsg: state.CreateDilemma.successMsg,
+      answersArray: state.CreateDilemma.answersArray
     };
   }
   else if(state.CreateDilemma !== null && state.CreateDilemma.answersArray) {

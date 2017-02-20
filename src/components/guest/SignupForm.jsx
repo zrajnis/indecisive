@@ -33,7 +33,7 @@ class SignupForm extends React.Component {
         newUser: formProps
       })
     }).then((response) => {
-      response.json().then((data) =>{
+      response.json().then((data) => {
         if(data.result === 'Success') {
           this.props.onSuccess();
         }
