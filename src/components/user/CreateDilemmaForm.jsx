@@ -117,7 +117,7 @@ class CreateDilemmaForm extends React.Component {
         <div id="answersListContainer">
           <ul id="answersList">{this.props.answersArray.length > 0 ? this.props.answersArray.map(
             (answer, i) =>  <li key={i}>{answer} <button type="button" className="removeAnswerBtn" onClick={() =>
-          this.removeAnswerFromArray(i)}>x</button></li>) : <li>No answers yet</li>}</ul>
+          this.removeAnswerFromArray(i)}>x</button></li>) : ''}</ul>
         </div>
         <button type="submit" id="createDilemmaBtn" disabled={this.props.answersArray.length < 2}>Create</button>
         <span className="successMsg">{this.props.successMsg}</span>

@@ -54,7 +54,7 @@ export function validateSignup(formProps) {
 export function validateCreateDilemma(formProps) { 
   const errors = {};
   const titleRegex =  /^[\s\S]{2,64}$/;
-  const descriptionRegex = /^[\s\S]{0,240}$/;
+  const descriptionRegex = /^[\s\S]{0,360}$/;
   const answerRegex = /^[\s\S]{2,64}$/;
 
   if(!formProps.title) {

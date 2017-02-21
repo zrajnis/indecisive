@@ -119,6 +119,7 @@ router.post('/createDilemma', (req, res) => {
         description: newDilemma.description,
         answers: newDilemma.answers,
         answerUpvotes: answerUpvotes,
+        votersId: [],
         timestamp: timestamp,
         userId: req.cookies['id']
       });
