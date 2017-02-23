@@ -1,15 +1,9 @@
 export function validateSettings(type , value) {
-  const usernameRegex =  /^[a-zA-Z0-9_]{2,16}$/;
   const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const passwordRegex =  /^[\s\S]{4,16}$/;
   let error = null;
 
   switch(type) {
-    case 'text':
-      if(!usernameRegex.test(value)) {
-        error = 'Invalid username entered';
-      }
-      break;
     case 'email':
       if(!emailRegex.test(value)) {
         error = 'Please enter a valid email';

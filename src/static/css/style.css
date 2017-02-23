@@ -279,7 +279,11 @@ label{
   margin-top: 75px;
 }
 
-#signupTitle, #settingsTitle, #createDilemmaTitle{
+#settingsTitle{
+  margin-top: 50px;
+}
+
+#signupTitle, #createDilemmaTitle{
   margin-top: 32px;
 }
 

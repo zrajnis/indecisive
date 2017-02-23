@@ -59,9 +59,6 @@ class Settings extends React.Component {
               input.value = '';
               this.props.dispatch(clearErrorMsg());
               break;
-            case 'Username is not available':
-              this.props.dispatch(serverUsernameResponse(data.result));
-              break;
             case 'Email is already in use':
               this.props.dispatch(serverEmailResponse(data.result));
               break;
@@ -93,8 +90,6 @@ class Settings extends React.Component {
   render() {
     return (
       <div id="settingsContainer" >
-        <label htmlFor="changeUsername">Change the username:</label>
-        <SettingsField id="changeUsername" type="text" errorMsg={this.props.usernameError} changeData={this.changeData}/>
         <label htmlFor="changeEmail">Change the email:</label>
         <SettingsField id="changeEmail" type="email" errorMsg={this.props.emailError} changeData={this.changeData}/>
         <label htmlFor="changePassword">Change the password:</label>
@@ -118,7 +113,6 @@ class Settings extends React.Component {
 const mapStateToProps = (state) => {
   if(state.Settings !== null) {
     return {
-      usernameError: state.Settings.usernameError,
       emailError: state.Settings.emailError,
       passwordError: state.Settings.passwordError
     };

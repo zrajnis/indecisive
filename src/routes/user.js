@@ -35,26 +35,6 @@ router.post('/settings', (req, res) => {
   const data = req.body.value;
   const inputType = req.body.type;
   switch(inputType) {
-    case 'text':
-      User.findOne({
-        lowercaseUsername: data.toLowerCase()
-      }, (err, user) => {
-        if(err) throw err;
-        if(user) {
-          console.log('username is already taken');
-          res.json({result: 'Username is not available'});
-        }
-        else {
-          User.findOneAndUpdate({
-              '_id':req.cookies['id']
-            },{$set: {'username': data, 'lowercaseUsername': data.toLowerCase()}},
-            {safe: true, upsert: false}, (err) => {
-              if(err) throw err;
-              res.json({result: 'Success'});
-            });
-        }
-      });
-      break;
     case 'email':
       User.findOne({
         email: data.toLowerCase()
@@ -104,10 +84,11 @@ router.delete('/settings', (req, res) => {
 router.post('/createDilemma', (req, res) => {
   const newDilemma = req.body.dilemmaData;
   const timestamp = new Date().toLocaleString('en-GB');
-  let answerUpvotes = newDilemma.answers.slice(); //copy array by val
-  answerUpvotes.forEach((answer, index) => { //change all values to 0
-    answerUpvotes[index] = 0;
+  let answerVotes = newDilemma.answers.slice(); //copy array by val
+  answerVotes.forEach((answer, index) => { //change all values to 0
+    answerVotes[index] = 0;
   });
+  console.log(answerVotes);
 
   User.findOne({
     _id: req.cookies['id']
@@ -118,10 +99,10 @@ router.post('/createDilemma', (req, res) => {
         title: newDilemma.title,
         description: newDilemma.description,
         answers: newDilemma.answers,
-        answerUpvotes: answerUpvotes,
+        answerVotes: answerVotes,
         votersId: [],
         timestamp: timestamp,
-        userId: req.cookies['id']
+        author: user.username
       });
 
       newDilemmaModel.save((err) => {
@@ -132,6 +113,93 @@ router.post('/createDilemma', (req, res) => {
     }
     else {
       res.json({result: 'User not found'});
+    }
+  });
+});
+
+router.post('/loadDilemmas', (req, res) => {
+  User.findOne({
+    _id: req.cookies['id']
+  }, (err, user) => {
+    if(err) throw err;
+    if(user) {
+      Dilemma.find({}, (err, dilemmas) => {
+        if(err) throw err;
+        res.send(dilemmas);
+      });
+    }
+    else{
+      res.json({result: 'User not found'});
+    }
+  })
+  
+});
+
+router.post('/newVote', (req, res) => {
+  const dilemmaId = req.body.dilemmaId;
+  const answerIndex = req.body.answerIndex;
+  Dilemma.findOne({
+    _id: dilemmaId}, (err, dilemma) => {
+    if(err) throw err;
+    if(dilemma){
+      dilemma.votersId.push(req.cookies['id']);
+      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+        return index === answerIndex ? ++answerVote: answerVote;
+      });
+      dilemma.save();
+      res.send(dilemma);
+    }
+    else{
+      res.json({result: 'Dilemma not found'});
+    }
+  });
+});
+
+router.post('/changeVote', (req, res) => {
+  console.log('change vote');
+  const dilemmaId = req.body.dilemmaId;
+  const oldAnswerIndex = req.body.oldAnswerIndex;
+  const newAnswerIndex = req.body.newAnswerIndex;
+  console.log(dilemmaId);
+  Dilemma.findOne({
+    _id: dilemmaId}, (err, dilemma) => {
+    if(err) throw err;
+    if(dilemma){
+      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+        if(index === oldAnswerIndex){
+          answerVote--;
+        }
+        else if(index === newAnswerIndex){
+          answerVote++;
+        }
+        return answerVote;
+      });
+      dilemma.save();
+      res.send(dilemma);
+    }
+    else{
+      res.json({result: 'Dilemma not found'});
+    }
+  });
+});
+
+router.post('/removeVote', (req, res) => {
+  const dilemmaId = req.body.dilemmaId;
+  const answerIndex = req.body.answerIndex;
+  console.log(dilemmaId);
+  Dilemma.findOne({
+    _id: dilemmaId}, (err, dilemma) => {
+    if(err) throw err;
+    if(dilemma){
+      dilemma.votersId.splice(dilemma.votersId.indexOf(req.cookies['id']),1);
+      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+        return index === answerIndex ? --answerVote: answerVote;
+      });
+      dilemma.save();
+      res.send(dilemma);
+    }
+    else{
+      res.json({result: 'Dilemma not found'});
     }
   });
 });
