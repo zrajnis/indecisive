@@ -6,6 +6,7 @@ export const CHANGE_VOTE_SUCCESS = 'CHANGE_VOTE_SUCCESS';
 export const CHANGE_VOTE_FAILURE = 'CHANGE_VOTE_FAILURE';
 export const REMOVE_VOTE_SUCCESS = 'REMOVE_VOTE_SUCCESS';
 export const REMOVE_VOTE_FAILURE = 'REMOVE_VOTE_FAILURE';
+export const REMOVE_DILEMMA_ERROR = 'REMOVE_DILEMMA_ERROR';
 
 export function loadDilemmas() {
   return (dispatch) => {
@@ -34,8 +35,7 @@ function loadDilemmasFailure(error) {
 }
 
 export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since you can just make function "vote" and pass url depending whether its adding new one,removing existing or changing a vote
-  console.log('entered add new action');         //this approach is more thorough and logically makes more sense from aspect of someone who's reading the dilemma.jsx file
-  return (dispatch) => {
+  return (dispatch) => {  //this approach is more thorough and logically makes more sense from aspect of someone who's reading the dilemma.jsx file
     fetch('/user/newVote', {
       method: 'POST',
       headers: {
@@ -47,9 +47,10 @@ export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since
       }),
       credentials: 'same-origin'
     }).then((response) => {
-      console.log('entered add new callback');
       response.json().then((changedDilemma) => {
-        console.log('added successfully');
+        if (changedDilemma.result) {// result is "Dilemma not found"
+          dispatch(addNewVoteFailure(changedDilemma.result, dilemmaId));
+        }
         dispatch(addNewVoteSuccess(changedDilemma));
       });
     }).catch( (err) => {
@@ -59,16 +60,14 @@ export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since
 }
 
 function addNewVoteSuccess(changedDilemma) {
-  console.log('entered add new vote success');
   return {type: ADD_NEW_VOTE_SUCCESS, changedDilemma: changedDilemma}
 }
 
-function addNewVoteFailure(error, changedDilemma) {
-  return {type: ADD_NEW_VOTE_FAILURE, error: error, dilemmaId: changedDilemma._id}
+function addNewVoteFailure(error, dilemmaId) {
+  return {type: ADD_NEW_VOTE_FAILURE, error: error, dilemmaId: dilemmaId}
 }
 
 export function changeVote(oldAnswerIndex, newAnswerIndex, dilemmaId) {
-  console.log('entered change action');
   return (dispatch) => {
     fetch('/user/changeVote', {
       method: 'POST',
@@ -82,9 +81,10 @@ export function changeVote(oldAnswerIndex, newAnswerIndex, dilemmaId) {
       }),
       credentials: 'same-origin'
     }).then((response) => {
-      console.log('entered change callback');
       response.json().then((changedDilemma) => {
-        console.log('changed successfully');
+        if (changedDilemma.result) {// result is "Dilemma not found"
+          dispatch(changeVoteFailure(changedDilemma.result, dilemmaId));
+        }
         dispatch(changeVoteSuccess(changedDilemma));
       });
     }).catch( (err) => {
@@ -94,16 +94,14 @@ export function changeVote(oldAnswerIndex, newAnswerIndex, dilemmaId) {
 }
 
 function changeVoteSuccess(changedDilemma) {
-  console.log('entered change vote success');
   return {type: CHANGE_VOTE_SUCCESS, changedDilemma: changedDilemma}
 }
 
-function changeVoteFailure(error, changedDilemma) {
-  return {type: CHANGE_VOTE_FAILURE, error: error, dilemmaId: changedDilemma._id}
+function changeVoteFailure(error, dilemmaId) {
+  return {type: CHANGE_VOTE_FAILURE, error: error, dilemmaId: dilemmaId}
 }
 
 export function removeVote(answerIndex, dilemmaId) {
-  console.log('entered remove action');
   return (dispatch) => {
     fetch('/user/removeVote', {
       method: 'POST',
@@ -116,22 +114,26 @@ export function removeVote(answerIndex, dilemmaId) {
       }),
       credentials: 'same-origin'
     }).then((response) => {
-      console.log('entered remove callback');
       response.json().then((changedDilemma) => {
-        console.log('removed successfully');
+        if (changedDilemma.result) {// result is "Dilemma not found"
+         dispatch(removeVoteFailure(changedDilemma.result, dilemmaId));
+        }
         dispatch(removeVoteSuccess(changedDilemma));
-      });
-    }).catch( (err) => {
+    }).catch((err) => {
       dispatch(removeVoteFailure(err));
     });
+  })
   }
 }
 
 function removeVoteSuccess(changedDilemma) {
-  console.log('entered remove vote success');
   return {type: REMOVE_VOTE_SUCCESS, changedDilemma: changedDilemma}
 }
 
-function removeVoteFailure(error, changedDilemma) {
-  return {type: REMOVE_VOTE_FAILURE, error: error, dilemmaId: changedDilemma._id}
+function removeVoteFailure(error, dilemmaId) {
+  return {type: REMOVE_VOTE_FAILURE, error: error, dilemmaId: dilemmaId}
+}
+
+export function removeDilemmaError(dilemmaId) {
+  return {type: REMOVE_DILEMMA_ERROR, error: '', dilemmaId: dilemmaId}
 }

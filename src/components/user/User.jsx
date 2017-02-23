@@ -2,7 +2,7 @@ import React from 'react';
 import NavBar from './NavBar.jsx';
 import Dilemma from '../Dilemma.jsx';
 const {connect} = require('react-redux');
-import {loadDilemmas, addNewVote, changeVote, removeVote} from '../../actions/Dilemmas';
+import {loadDilemmas, addNewVote, changeVote, removeVote, removeDilemmaError} from '../../actions/Dilemmas';
 
 class User extends React.Component {
   constructor(props) {
@@ -18,11 +18,12 @@ class User extends React.Component {
       <div id="container">
         <NavBar/>
         {(this.props.dilemmas) ?
-          this.props.dilemmas.map( (dilemma, index)=>
+          this.props.dilemmas.map((dilemma, index) =>
             <Dilemma dilemma={dilemma} key={index} dilemmaNumber={index}
                addNewVote={(index, id) => this.props.dispatch(addNewVote(index, id))}
                changeVote={(oldIndex, newIndex, id) => this.props.dispatch(changeVote(oldIndex, newIndex, id))}
-               removeVote={(index, id) => this.props.dispatch(removeVote(index, id))} />)
+               removeVote={(index, id) => this.props.dispatch(removeVote(index, id))}
+               removeDilemmaError={(id) => this.props.dispatch(removeDilemmaError(id))}/>)
           :
           <div className="errorMsg">{this.props.error} </div>
         }
@@ -32,7 +33,6 @@ class User extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   if(state.Dilemmas !== null && state.Dilemmas.data) {
     return {
       dilemmas: state.Dilemmas.data

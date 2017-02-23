@@ -150,7 +150,7 @@ router.post('/newVote', (req, res) => {
       res.send(dilemma);
     }
     else{
-      res.json({result: 'Dilemma not found'});
+      res.json({result: 'error: Dilemma not found'});
     }
   });
 });
@@ -178,7 +178,7 @@ router.post('/changeVote', (req, res) => {
       res.send(dilemma);
     }
     else{
-      res.json({result: 'Dilemma not found'});
+      res.json({result: 'error: Dilemma not found'});
     }
   });
 });
@@ -199,7 +199,7 @@ router.post('/removeVote', (req, res) => {
       res.send(dilemma);
     }
     else{
-      res.json({result: 'Dilemma not found'});
+      res.json({result: 'error: Dilemma not found'});
     }
   });
 });

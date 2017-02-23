@@ -1,5 +1,5 @@
 import {LOAD_DILEMMAS_SUCCESS, LOAD_DILEMMAS_FAILURE, ADD_NEW_VOTE_SUCCESS, ADD_NEW_VOTE_FAILURE,
-  CHANGE_VOTE_SUCCESS, CHANGE_VOTE_FAILURE,REMOVE_VOTE_SUCCESS, REMOVE_VOTE_FAILURE}
+  CHANGE_VOTE_SUCCESS, CHANGE_VOTE_FAILURE,REMOVE_VOTE_SUCCESS, REMOVE_VOTE_FAILURE, REMOVE_DILEMMA_ERROR}
   from '../actions/Dilemmas';
 
 export default function(state = null, action) {
@@ -20,16 +20,15 @@ export default function(state = null, action) {
           return dilemma;
         })
       });
-      console.log(state.data);
       break;
     case LOAD_DILEMMAS_FAILURE:
     case ADD_NEW_VOTE_FAILURE:
     case CHANGE_VOTE_FAILURE:
     case REMOVE_VOTE_FAILURE:
-      console.log('failure');
+    case REMOVE_DILEMMA_ERROR:
       return Object.assign({}, state, {
-        data: [data].map((dilemma) => {
-          if(dilemma._id === action.changedDilemma._id){
+        data: state.data.map((dilemma) => {
+          if(dilemma._id === action.dilemmaId){
             dilemma.error = action.error;
           }
           return dilemma;

@@ -482,3 +482,8 @@ button:disabled{
   position: relative;
   margin-top: 2px;
 }
+
+.unclickable{
+  pointer-events: none;
+  opacity: 0.25;
+}
