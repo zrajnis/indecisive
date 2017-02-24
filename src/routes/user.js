@@ -2,6 +2,8 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Dilemma = require('../models/Dilemma');
+const Vote = require('../models/Vote');
+
 
 //middleware to verify the token
 router.use((req, res, next) => {
@@ -124,15 +126,21 @@ router.post('/loadDilemmas', (req, res) => {
       Dilemma.find({}, (err, dilemmas) => {
         if(err) throw err;
         let userVoteIndexes  = [];
-        dilemmas.forEach((dilemma, i) => {
+       /* dilemmas.forEach((dilemma, i) => {
           userVoteIndexes[i] = -1;
           for(let cnt = 0; cnt < user.dilemmaVotes.length; cnt++) {
             if(dilemma._id.toString() === user.dilemmaVotes[cnt].dilemmaId.toString()) { //converting both objects to strings for comparisson
               userVoteIndexes[i] = user.dilemmaVotes[cnt].voteIndex;
             }
           }
-        });
-        res.send({dilemmas, userVoteIndexes});
+        });*/
+        Vote.find({
+          'userId': req.cookies['id']
+        }, (err,votes) => {
+          if(err) throw err;
+          console.log('votes are ' + votes);
+          res.send({dilemmas, votes});
+        })
       });
     }
     else{
@@ -154,14 +162,22 @@ router.post('/newVote', (req, res) => {
         return index === answerIndex ? ++answerVote: answerVote;
       });
       dilemma.save();
-      User.findOne({
-        '_id': req.cookies['id']
-      }, (err, user) => {
-        if(err) throw err;
-        user.dilemmaVotes.push({dilemmaId: dilemma._id, voteIndex: answerIndex});
-        user.save();
+      const newVoteModel = new Vote({
+        'userId': req.cookies['id'],
+        'dilemmaId': dilemma._id,
+        'voteIndex': answerIndex
       });
-      res.send(dilemma);
+      newVoteModel.save((err) => {
+        if(err) throw err;
+        Vote.find({
+          'userId': req.cookies['id']
+        }, (err,votes) => {
+          if(err) throw err;
+          console.log('found votes ' + votes);
+          res.send({dilemma, votes});
+        })
+      });
+
     }
     else{
       res.json({result: 'error: Dilemma not found'});
@@ -170,6 +186,7 @@ router.post('/newVote', (req, res) => {
 });
 
 router.post('/changeVote', (req, res) => {
+  console.log('entered change vote')
   const dilemmaId = req.body.dilemmaId;
   const oldAnswerIndex = req.body.oldAnswerIndex;
   const newAnswerIndex = req.body.newAnswerIndex;
@@ -188,19 +205,17 @@ router.post('/changeVote', (req, res) => {
         return answerVote;
       });
       dilemma.save();
-      User.findOne({
-        '_id': req.cookies['id']
-      }, (err, user) => {
+      Vote.findOne({
+        'userId': req.cookies['id'],
+        'dilemmaId': dilemma._id,
+        'voteIndex': oldAnswerIndex
+      }, (err, vote) => {
         if(err) throw err;
-        user.dilemmaVotes.forEach((dilemmaVote) => {
-          if (dilemmaVote.dilemmaId.toString() === dilemma._id.toString()) {
-            dilemmaVote.voteIndex = newAnswerIndex;
-          }
-        });
-        user.save();
-        console.log('dilemma votes are ' + user.dilemmaVotes);
-      });
-      res.send(dilemma);
+        vote.voteIndex = newAnswerIndex;
+        vote.save();
+        console.log('vote changed' + vote );
+        res.send({dilemma, vote});
+      })
     }
     else{
       res.json({result: 'error: Dilemma not found'});
@@ -220,19 +235,15 @@ router.post('/removeVote', (req, res) => {
         return index === answerIndex ? --answerVote: answerVote;
       });
       dilemma.save();
-      User.findOne({
-          '_id': req.cookies['id']
-        }, (err, user) => {
-          if(err) throw err;
-        user.dilemmaVotes.forEach((dilemmaVote, index) => {
-          if(dilemmaVote.dilemmaId.toString() === dilemma._id.toString()){
-            user.dilemmaVotes.splice(index, 1);
-          }
-        });
-          user.save();
-          console.log(user.dilemmaVotes)
-        });
-      res.send(dilemma);
+      Vote.findOneAndRemove({
+        'userId': req.cookies['id'],
+        'dilemmaId': dilemma._id,
+        'voteIndex': answerIndex
+      }, (err) => {
+        if(err) throw err;
+        console.log('vote deleted' );
+        res.send({dilemma});
+      })
     }
     else{
       res.json({result: 'error: Dilemma not found'});

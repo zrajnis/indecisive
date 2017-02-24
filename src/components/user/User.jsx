@@ -10,6 +10,8 @@ class User extends React.Component {
   }
 
   componentDidMount(){
+    this.props.votes ? 
+    console.log('testing how to find vote index ', this.props.votes.findIndex( vote => vote.voteIndex === 0)) : false ;
     this.props.dispatch(loadDilemmas());
   }
 
@@ -20,6 +22,8 @@ class User extends React.Component {
         {(this.props.dilemmas) ?
           this.props.dilemmas.map((dilemma, index) =>
             <Dilemma dilemma={dilemma} key={index} dilemmaNumber={index}
+               voteIndex={this.props.votes.toString() ?
+               this.props.votes[this.props.votes.findIndex((vote) => vote.dilemmaId === dilemma._id)].voteIndex : -1}
                addNewVote={(index, id) => this.props.dispatch(addNewVote(index, id))}
                changeVote={(oldIndex, newIndex, id) => this.props.dispatch(changeVote(oldIndex, newIndex, id))}
                removeVote={(index, id) => this.props.dispatch(removeVote(index, id))}
@@ -35,7 +39,8 @@ class User extends React.Component {
 const mapStateToProps = (state) => {
   if(state.Dilemmas !== null && state.Dilemmas.data) {
     return {
-      dilemmas: state.Dilemmas.data
+      dilemmas: state.Dilemmas.data,
+      votes: state.Dilemmas.votes ? state.Dilemmas.votes : []
     };
   }
   else if(state.Dilemmas !== null && state.Dilemmas.error){

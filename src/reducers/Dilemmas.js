@@ -6,42 +6,43 @@ export default function(state = null, action) {
   switch(action.type) {
     case LOAD_DATA_SUCCESS:
       return Object.assign({}, state, {
-        data: action.dilemmas.map((dilemma, index) => {
-          dilemma.voteIndex = action.userVoteIndexes[index];
-          return dilemma;
-        })
+        data: action.dilemmas,
+        votes: action.votes
       });
       break;
     case ADD_NEW_VOTE_SUCCESS:
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
-          if(dilemma._id === action.changedDilemma._id){
-            dilemma = action.changedDilemma;
-            dilemma.voteIndex = action.answerIndex;
-          }
-          return dilemma;
-        })
+          return dilemma._id === action.changedDilemma._id ? action.changedDilemma : dilemma;
+        }),
+        votes: action.votes
       });
       break;
     case CHANGE_VOTE_SUCCESS:
+      console.log('entered change vote' + action.changedVote)
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
-          if(dilemma._id === action.changedDilemma._id){
-            dilemma = action.changedDilemma;
-            dilemma.voteIndex = action.newAnswerIndex;
-          }
-          return dilemma;
+          return dilemma._id === action.changedDilemma._id ? action.changedDilemma : dilemma;
+        }),
+        votes: state.votes.map((vote) => {
+          return vote.dilemmaId === action.changedDilemma._id ? action.changedVote : vote;
         })
       });
       break;
     case REMOVE_VOTE_SUCCESS:
+      console.log('entered remove vote')
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
-          if(dilemma._id === action.changedDilemma._id){
-            dilemma = action.changedDilemma;
-            dilemma.voteIndex = - 1;
+          return dilemma._id === action.changedDilemma._id ? action.changedDilemma : dilemma;
+        }),
+        votes: state.votes.map((vote, index) => {
+          if(vote.dilemmaId === action.changedDilemma._id){
+            console.log('aaaaaaaaaa ' + vote)
+            state.votes.splice(index, 1);
           }
-          return dilemma;
+          else {
+            return vote;
+          }
         })
       });
       break;
