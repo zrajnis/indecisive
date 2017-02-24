@@ -1,5 +1,5 @@
-export const LOAD_DILEMMAS_SUCCESS = 'LOAD_DILEMMAS_SUCCESS';
-export const LOAD_DILEMMAS_FAILURE = 'LOAD_DILEMMAS_FAILURE';
+export const LOAD_DATA_SUCCESS = 'LOAD_DATA_SUCCESS';
+export const LOAD_DATA_FAILURE = 'LOAD_DATA_FAILURE';
 export const ADD_NEW_VOTE_SUCCESS = 'ADD_NEW_VOTE_SUCCESS';
 export const ADD_NEW_VOTE_FAILURE = 'ADD_NEW_VOTE_FAILURE';
 export const CHANGE_VOTE_SUCCESS = 'CHANGE_VOTE_SUCCESS';
@@ -17,8 +17,8 @@ export function loadDilemmas() {
       },
       credentials: 'same-origin'
     }).then((response) => {
-      response.json().then((dilemmas) => {
-        dispatch(loadDilemmasSuccess(dilemmas))
+      response.json().then((data) => {
+        dispatch(loadDataSuccess(data));
       });
     }).catch( (err) => {
       dispatch(loadDilemmasFailure(err));
@@ -26,12 +26,13 @@ export function loadDilemmas() {
   }
 }
 
-function loadDilemmasSuccess(dilemmas) {
-  return { type: LOAD_DILEMMAS_SUCCESS, dilemmas: dilemmas}
+function loadDataSuccess(data) {
+  console.log(data.userVoteIndexes)
+  return { type: LOAD_DATA_SUCCESS, dilemmas: data.dilemmas, userVoteIndexes: data.userVoteIndexes}
 }
 
 function loadDilemmasFailure(error) {
-  return { type: LOAD_DILEMMAS_FAILURE, error: error}
+  return { type: LOAD_DATA_FAILURE, error: error}
 }
 
 export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since you can just make function "vote" and pass url depending whether its adding new one,removing existing or changing a vote
@@ -51,7 +52,7 @@ export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since
         if (changedDilemma.result) {// result is "Dilemma not found"
           dispatch(addNewVoteFailure(changedDilemma.result, dilemmaId));
         }
-        dispatch(addNewVoteSuccess(changedDilemma));
+        dispatch(addNewVoteSuccess(changedDilemma, answerIndex));
       });
     }).catch( (err) => {
       dispatch(addNewVoteFailure(err));
@@ -59,8 +60,8 @@ export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since
   }
 }
 
-function addNewVoteSuccess(changedDilemma) {
-  return {type: ADD_NEW_VOTE_SUCCESS, changedDilemma: changedDilemma}
+function addNewVoteSuccess(changedDilemma, answerIndex) {
+  return {type: ADD_NEW_VOTE_SUCCESS, changedDilemma: changedDilemma, answerIndex: answerIndex}
 }
 
 function addNewVoteFailure(error, dilemmaId) {
@@ -85,7 +86,7 @@ export function changeVote(oldAnswerIndex, newAnswerIndex, dilemmaId) {
         if (changedDilemma.result) {// result is "Dilemma not found"
           dispatch(changeVoteFailure(changedDilemma.result, dilemmaId));
         }
-        dispatch(changeVoteSuccess(changedDilemma));
+        dispatch(changeVoteSuccess(changedDilemma, newAnswerIndex));
       });
     }).catch( (err) => {
       dispatch(changeVoteFailure(err));
@@ -93,8 +94,8 @@ export function changeVote(oldAnswerIndex, newAnswerIndex, dilemmaId) {
   }
 }
 
-function changeVoteSuccess(changedDilemma) {
-  return {type: CHANGE_VOTE_SUCCESS, changedDilemma: changedDilemma}
+function changeVoteSuccess(changedDilemma, newAnswerIndex) {
+  return {type: CHANGE_VOTE_SUCCESS, changedDilemma: changedDilemma, newAnswerIndex: newAnswerIndex}
 }
 
 function changeVoteFailure(error, dilemmaId) {

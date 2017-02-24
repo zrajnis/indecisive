@@ -8,5 +8,6 @@ module.exports = mongoose.model('User', new Schema({
   lowercaseUsername: String,
   password: String,
   email: String,
+  dilemmaVotes: [{dilemmaId: Schema.ObjectId,voteIndex: Number}], //pair id of dilemma that user voted for and index of option he voted for
   admin: Boolean
 }));

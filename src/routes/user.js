@@ -34,10 +34,11 @@ router.get('/', (req, res) => {
 router.post('/settings', (req, res) => {
   const data = req.body.value;
   const inputType = req.body.type;
+  
   switch(inputType) {
     case 'email':
       User.findOne({
-        email: data.toLowerCase()
+        'email': data.toLowerCase()
       }, (err, user) => {
         if(err) throw err;
         if(user) {
@@ -83,15 +84,14 @@ router.delete('/settings', (req, res) => {
 
 router.post('/createDilemma', (req, res) => {
   const newDilemma = req.body.dilemmaData;
-  const timestamp = new Date().toLocaleString('en-GB');
+  const timestamp = new Date().toLocaleString('en-GB'); //im well aware timestamp can be pulled out of ObjectId().getTimestamp(), i prefer this logic though
   let answerVotes = newDilemma.answers.slice(); //copy array by val
   answerVotes.forEach((answer, index) => { //change all values to 0
     answerVotes[index] = 0;
   });
-  console.log(answerVotes);
 
   User.findOne({
-    _id: req.cookies['id']
+    '_id': req.cookies['id']
   }, (err, user) => {
     if (err) throw err;
     if (user) {
@@ -100,7 +100,6 @@ router.post('/createDilemma', (req, res) => {
         description: newDilemma.description,
         answers: newDilemma.answers,
         answerVotes: answerVotes,
-        votersId: [],
         timestamp: timestamp,
         author: user.username
       });
@@ -108,7 +107,6 @@ router.post('/createDilemma', (req, res) => {
       newDilemmaModel.save((err) => {
         if (err) throw err;
       });
-      console.log('Dilemma created successfully');
       res.json({result: 'Dilemma created'});
     }
     else {
@@ -119,13 +117,22 @@ router.post('/createDilemma', (req, res) => {
 
 router.post('/loadDilemmas', (req, res) => {
   User.findOne({
-    _id: req.cookies['id']
+    '_id': req.cookies['id']
   }, (err, user) => {
     if(err) throw err;
     if(user) {
       Dilemma.find({}, (err, dilemmas) => {
         if(err) throw err;
-        res.send(dilemmas);
+        let userVoteIndexes  = [];
+        dilemmas.forEach((dilemma, i) => {
+          userVoteIndexes[i] = -1;
+          for(let cnt = 0; cnt < user.dilemmaVotes.length; cnt++) {
+            if(dilemma._id.toString() === user.dilemmaVotes[cnt].dilemmaId.toString()) { //converting both objects to strings for comparisson
+              userVoteIndexes[i] = user.dilemmaVotes[cnt].voteIndex;
+            }
+          }
+        });
+        res.send({dilemmas, userVoteIndexes});
       });
     }
     else{
@@ -138,15 +145,22 @@ router.post('/loadDilemmas', (req, res) => {
 router.post('/newVote', (req, res) => {
   const dilemmaId = req.body.dilemmaId;
   const answerIndex = req.body.answerIndex;
+
   Dilemma.findOne({
-    _id: dilemmaId}, (err, dilemma) => {
+    '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
     if(dilemma){
-      dilemma.votersId.push(req.cookies['id']);
       dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
         return index === answerIndex ? ++answerVote: answerVote;
       });
       dilemma.save();
+      User.findOne({
+        '_id': req.cookies['id']
+      }, (err, user) => {
+        if(err) throw err;
+        user.dilemmaVotes.push({dilemmaId: dilemma._id, voteIndex: answerIndex});
+        user.save();
+      });
       res.send(dilemma);
     }
     else{
@@ -156,13 +170,12 @@ router.post('/newVote', (req, res) => {
 });
 
 router.post('/changeVote', (req, res) => {
-  console.log('change vote');
   const dilemmaId = req.body.dilemmaId;
   const oldAnswerIndex = req.body.oldAnswerIndex;
   const newAnswerIndex = req.body.newAnswerIndex;
-  console.log(dilemmaId);
+
   Dilemma.findOne({
-    _id: dilemmaId}, (err, dilemma) => {
+    '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
     if(dilemma){
       dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
@@ -175,6 +188,18 @@ router.post('/changeVote', (req, res) => {
         return answerVote;
       });
       dilemma.save();
+      User.findOne({
+        '_id': req.cookies['id']
+      }, (err, user) => {
+        if(err) throw err;
+        user.dilemmaVotes.forEach((dilemmaVote) => {
+          if (dilemmaVote.dilemmaId.toString() === dilemma._id.toString()) {
+            dilemmaVote.voteIndex = newAnswerIndex;
+          }
+        });
+        user.save();
+        console.log('dilemma votes are ' + user.dilemmaVotes);
+      });
       res.send(dilemma);
     }
     else{
@@ -188,14 +213,25 @@ router.post('/removeVote', (req, res) => {
   const answerIndex = req.body.answerIndex;
   console.log(dilemmaId);
   Dilemma.findOne({
-    _id: dilemmaId}, (err, dilemma) => {
+    '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
     if(dilemma){
-      dilemma.votersId.splice(dilemma.votersId.indexOf(req.cookies['id']),1);
       dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
         return index === answerIndex ? --answerVote: answerVote;
       });
       dilemma.save();
+      User.findOne({
+          '_id': req.cookies['id']
+        }, (err, user) => {
+          if(err) throw err;
+        user.dilemmaVotes.forEach((dilemmaVote, index) => {
+          if(dilemmaVote.dilemmaId.toString() === dilemma._id.toString()){
+            user.dilemmaVotes.splice(index, 1);
+          }
+        });
+          user.save();
+          console.log(user.dilemmaVotes)
+        });
       res.send(dilemma);
     }
     else{

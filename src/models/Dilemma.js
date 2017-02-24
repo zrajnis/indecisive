@@ -6,7 +6,6 @@ module.exports = mongoose.model('Dilemma', new Schema({
   description: String,
   answers: [String],
   answerVotes: [Number],
-  votersId: [Schema.ObjectId],
   timestamp: String,
   author: String //users are unique so name can be used as id in this case (also will reduce number of queries in total)
 }));

@@ -5,29 +5,30 @@ class Dilemma extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      answerVoted: -1, //index of answer that user voted for
+      //answerVoted: -1, //index of answer that user voted for
       isDisplayingVoteResults: false
     }
   }
 
   voteAction(index) {
     this.props.removeDilemmaError(this.props.dilemma._id);
-    if(this.state.answerVoted === index) { //if user is  removing existing answer
+    if(this.props.dilemma.voteIndex === index) { //if user is  removing existing answer
       this.props.removeVote(index, this.props.dilemma._id);
-      this.state.answerVoted = -1;
+      //this.state.answerVoted = -1;
     }
     else {
-      if(this.state.answerVoted === -1) { //if answer wasnt already upvoted and no other answer was selected add new one
+      if(this.props.dilemma.voteIndex === -1) { //if answer wasnt already upvoted and no other answer was selected add new one
         this.props.addNewVote(index, this.props.dilemma._id);
       }
       else {  //otherwise change the vote from one answer to another
-        this.props.changeVote(this.state.answerVoted, index, this.props.dilemma._id);
+        this.props.changeVote(this.props.dilemma.voteIndex, index, this.props.dilemma._id);
       }
-      this.state.answerVoted = index;
+      //this.state.answerVoted = index;
     }
   }
 
   toggleVoteDisplay() {
+    console.log(this.props)
     this.setState({isDisplayingVoteResults: !this.state.isDisplayingVoteResults});
   }
 
@@ -45,7 +46,7 @@ class Dilemma extends React.Component {
           {this.props.dilemma.answers.map((answer, i) =>
             <div key={i} className="dilemmaRadioWrapper">
               <input type="radio" name={"upvoteDilemma" + this.props.dilemmaNumber} className="upvoteRadio" 
-                     id={"Dilemma" + this.props.dilemmaNumber + "RadioBtn" + i} checked={(this.props.dilemma.error || i !== this.state.answerVoted) ? false : true}/>
+                     id={"Dilemma" + this.props.dilemmaNumber + "RadioBtn" + i} checked={(this.props.dilemma.error || i !== this.props.dilemma.voteIndex) ? false : true}/>
               <span className={this.props.dilemma.error ? "radioImg unclickable" : "radioImg"} onClick={() => this.voteAction(i)}/>
               <label htmlFor={"radioBtn" + i}>
                 <span  className="radioText">{answer}</span>
