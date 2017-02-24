@@ -4,7 +4,7 @@ import NavBar from './NavBar.jsx';
 class Guest extends React.Component {
   render() {
     return (
-      <div className="container">
+      <div id="container">
         <NavBar/>
       </div>
     );

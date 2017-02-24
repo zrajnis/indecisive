@@ -42,15 +42,15 @@ class NavBar extends React.Component {
 
   render() {
     return (
-      <div>
-        <nav className="navBar">
-          <ul>
+      <div id="navBarContainer">
+        <nav id="navBar">
+          <ul id="navBarList">
             <li><a className="active" href="/user">Home</a></li>
             <li><a href="/user/hot">Hot</a></li>
             <li><a href="/user/newest">Newest</a></li>
             <li><a href="/user/mine">Mine</a></li>
           </ul>
-          <div className="searchFormContainer">
+          <div id="searchFormContainer">
             <form id="searchForm" href="#search">
               <label  htmlFor="#searchBar" className="hidden">Search a dilemma</label>
               <input type="search" placeholder="Search a dilemma" id="searchBar"/>

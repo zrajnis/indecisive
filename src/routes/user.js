@@ -34,30 +34,11 @@ router.get('/', (req, res) => {
 router.post('/settings', (req, res) => {
   const data = req.body.value;
   const inputType = req.body.type;
+  
   switch(inputType) {
-    case 'text':
-      User.findOne({
-        lowercaseUsername: data.toLowerCase()
-      }, (err, user) => {
-        if(err) throw err;
-        if(user) {
-          console.log('username is already taken');
-          res.json({result: 'Username is not available'});
-        }
-        else {
-          User.findOneAndUpdate({
-              '_id':req.cookies['id']
-            },{$set: {'username': data, 'lowercaseUsername': data.toLowerCase()}},
-            {safe: true, upsert: false}, (err) => {
-              if(err) throw err;
-              res.json({result: 'Success'});
-            });
-        }
-      });
-      break;
     case 'email':
       User.findOne({
-        email: data.toLowerCase()
+        'email': data.toLowerCase()
       }, (err, user) => {
         if(err) throw err;
         if(user) {
@@ -103,14 +84,14 @@ router.delete('/settings', (req, res) => {
 
 router.post('/createDilemma', (req, res) => {
   const newDilemma = req.body.dilemmaData;
-  const timestamp = new Date().toLocaleString('en-GB');
-  let answerUpvotes = newDilemma.answers.slice(); //copy array by val
-  answerUpvotes.forEach((answer, index) => { //change all values to 0
-    answerUpvotes[index] = 0;
+  const timestamp = new Date().toLocaleString('en-GB'); //im well aware timestamp can be pulled out of ObjectId().getTimestamp(), i prefer this logic though
+  let answerVotes = newDilemma.answers.slice(); //copy array by val
+  answerVotes.forEach((answer, index) => { //change all values to 0
+    answerVotes[index] = 0;
   });
 
   User.findOne({
-    _id: req.cookies['id']
+    '_id': req.cookies['id']
   }, (err, user) => {
     if (err) throw err;
     if (user) {
@@ -118,19 +99,143 @@ router.post('/createDilemma', (req, res) => {
         title: newDilemma.title,
         description: newDilemma.description,
         answers: newDilemma.answers,
-        answerUpvotes: answerUpvotes,
+        answerVotes: answerVotes,
         timestamp: timestamp,
-        userId: req.cookies['id']
+        author: user.username
       });
 
       newDilemmaModel.save((err) => {
         if (err) throw err;
       });
-      console.log('Dilemma created successfully');
       res.json({result: 'Dilemma created'});
     }
     else {
       res.json({result: 'User not found'});
+    }
+  });
+});
+
+router.post('/loadDilemmas', (req, res) => {
+  User.findOne({
+    '_id': req.cookies['id']
+  }, (err, user) => {
+    if(err) throw err;
+    if(user) {
+      Dilemma.find({}, (err, dilemmas) => {
+        if(err) throw err;
+        let userVoteIndexes  = [];
+        dilemmas.forEach((dilemma, i) => {
+          userVoteIndexes[i] = -1;
+          for(let cnt = 0; cnt < user.dilemmaVotes.length; cnt++) {
+            if(dilemma._id.toString() === user.dilemmaVotes[cnt].dilemmaId.toString()) { //converting both objects to strings for comparisson
+              userVoteIndexes[i] = user.dilemmaVotes[cnt].voteIndex;
+            }
+          }
+        });
+        res.send({dilemmas, userVoteIndexes});
+      });
+    }
+    else{
+      res.json({result: 'User not found'});
+    }
+  })
+  
+});
+
+router.post('/newVote', (req, res) => {
+  const dilemmaId = req.body.dilemmaId;
+  const answerIndex = req.body.answerIndex;
+
+  Dilemma.findOne({
+    '_id': dilemmaId}, (err, dilemma) => {
+    if(err) throw err;
+    if(dilemma){
+      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+        return index === answerIndex ? ++answerVote: answerVote;
+      });
+      dilemma.save();
+      User.findOne({
+        '_id': req.cookies['id']
+      }, (err, user) => {
+        if(err) throw err;
+        user.dilemmaVotes.push({dilemmaId: dilemma._id, voteIndex: answerIndex});
+        user.save();
+      });
+      res.send(dilemma);
+    }
+    else{
+      res.json({result: 'error: Dilemma not found'});
+    }
+  });
+});
+
+router.post('/changeVote', (req, res) => {
+  const dilemmaId = req.body.dilemmaId;
+  const oldAnswerIndex = req.body.oldAnswerIndex;
+  const newAnswerIndex = req.body.newAnswerIndex;
+
+  Dilemma.findOne({
+    '_id': dilemmaId}, (err, dilemma) => {
+    if(err) throw err;
+    if(dilemma){
+      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+        if(index === oldAnswerIndex){
+          answerVote--;
+        }
+        else if(index === newAnswerIndex){
+          answerVote++;
+        }
+        return answerVote;
+      });
+      dilemma.save();
+      User.findOne({
+        '_id': req.cookies['id']
+      }, (err, user) => {
+        if(err) throw err;
+        user.dilemmaVotes.forEach((dilemmaVote) => {
+          if (dilemmaVote.dilemmaId.toString() === dilemma._id.toString()) {
+            dilemmaVote.voteIndex = newAnswerIndex;
+          }
+        });
+        user.save();
+        console.log('dilemma votes are ' + user.dilemmaVotes);
+      });
+      res.send(dilemma);
+    }
+    else{
+      res.json({result: 'error: Dilemma not found'});
+    }
+  });
+});
+
+router.post('/removeVote', (req, res) => {
+  const dilemmaId = req.body.dilemmaId;
+  const answerIndex = req.body.answerIndex;
+  console.log(dilemmaId);
+  Dilemma.findOne({
+    '_id': dilemmaId}, (err, dilemma) => {
+    if(err) throw err;
+    if(dilemma){
+      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+        return index === answerIndex ? --answerVote: answerVote;
+      });
+      dilemma.save();
+      User.findOne({
+          '_id': req.cookies['id']
+        }, (err, user) => {
+          if(err) throw err;
+        user.dilemmaVotes.forEach((dilemmaVote, index) => {
+          if(dilemmaVote.dilemmaId.toString() === dilemma._id.toString()){
+            user.dilemmaVotes.splice(index, 1);
+          }
+        });
+          user.save();
+          console.log(user.dilemmaVotes)
+        });
+      res.send(dilemma);
+    }
+    else{
+      res.json({result: 'error: Dilemma not found'});
     }
   });
 });

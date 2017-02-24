@@ -15,6 +15,6 @@ export function createDilemmaFailure(message){
   return {type: CREATE_DILEMMA_FAILURE, message: message}
 }
 
-export function clearDilemmaMessages(message){
+export function clearDilemmaMessages(){
   return {type: CLEAR_DILEMMA_MESSAGES, message: ''}
 }

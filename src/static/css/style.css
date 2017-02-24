@@ -7,23 +7,32 @@ h1{
   text-align: center;
 }
 
-.navBar{
+#navBar{
   background: #c06014;
   width: 100%;
   height: 48px;
 }
 
-.container{
+#container{
   width: 1000px;
   margin:auto;
   height:1200px;
   background: #233237;
 }
 
-input, button, #deactivateContainer, textarea, #answersList{
+input, button, #deactivateContainer, textarea, #answersList, .dilemmaContainer, .radioText, .answerVotes{
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+.modal, .createDilemmaModal, #container, .dilemmaContainer, #navBar, #navBarList{
+  border-radius: 3px;
+}
+
+#navBar, #navBarList{
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 input, textarea{
@@ -45,9 +54,14 @@ ul{
   vertical-align: middle;
 }
 
+#navBarList li{
+  width: 80px;
+}
+
 li{
   float:left;
   border-right: 1px solid #233237;
+  border-radius: 10px;
 }
 
 li a {
@@ -62,7 +76,7 @@ li a:hover {
   text-decoration: underline;
 }
 
-.searchFormContainer{
+#searchFormContainer{
   display: inline-block;
   float: right;
   margin-top: 12px;
@@ -265,7 +279,11 @@ label{
   margin-top: 75px;
 }
 
-#signupTitle, #settingsTitle, #createDilemmaTitle{
+#settingsTitle{
+  margin-top: 50px;
+}
+
+#signupTitle, #createDilemmaTitle{
   margin-top: 32px;
 }
 
@@ -361,4 +379,111 @@ button:disabled{
   color: limegreen;
   display: inline-block;
   margin-left: 20px;
+}
+
+.dilemmaContainer{
+  width: 500px;
+  background: #eddbcd;
+  border: 1px solid #c06014;
+  margin-left: 250px;
+  margin-top: 50px;
+}
+
+.dilemmaTitleContainer{
+  background: #c06014;
+  color: #233237;
+  height: 45px;
+  vertical-align: bottom;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+}
+
+.dilemmaAnswerContainer{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.dilemmaTitle{
+  font-weight: bold;
+}
+.authorContainer{
+  text-align: right;
+  font-size: 12px;
+}
+
+.dilemmaDescription{
+  min-height: 50px;
+  color: #233237;
+  border-bottom: 1px solid #c06014;
+  margin: 10px 20px 0 20px;
+  padding-bottom: 10px;
+}
+
+.radioImg{
+  background: #c06014 url('../images/Radio.png') no-repeat;
+  display: inline-block;
+  height: 26px;
+  width: 26px;
+  vertical-align: middle;
+  margin-left: 10px;
+  margin-bottom: 2px;
+  border-radius: 5px;
+  position: relative;
+}
+
+.upvoteRadio{
+  display: none;
+}
+
+.upvoteRadio:checked + span{
+  background: #c06014 url('../images/Checked-radio.png') no-repeat;
+}
+
+.radioText{
+  border-bottom: 1px solid #c06014;
+  padding-left: 10px;
+  display: inline-block;
+  width: 70%;
+  height: 26px;
+  line-height: 2;
+  color: #233237;
+  font-size: 12px;
+}
+
+.answerVotes{
+  display: inline-block;
+  height: 26px;
+  width: 10%;
+  margin-left: 20px;
+  border: 1px solid #233237;
+  border-radius: 3px;
+  color: #233237;
+  background: #c06014;
+  text-align: center;
+  font-size: 14px;
+  vertical-align: middle;
+  line-height: 1.8;
+}
+
+.toggleVotesBtnContainer{
+  margin: 10px 20px 10px 20px;
+  height: 30px;
+}
+
+.toggleVotesBtn{
+  width: 86px;
+  height: 26px;
+  border-radius: 3px;
+  border: 1px solid #233237;
+  color: #233237;
+  background: #c06014;
+  float: right;
+  position: relative;
+  margin-top: 2px;
+}
+
+.unclickable{
+  pointer-events: none;
+  opacity: 0.25;
 }

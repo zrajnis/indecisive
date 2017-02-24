@@ -10,7 +10,7 @@ router.post('/signup', (req,res) => {
   const newUser = req.body.newUser;
   console.log(newUser);
   User.findOne({
-    lowercaseUsername: newUser.username.toLowerCase()
+    'lowercaseUsername': newUser.username.toLowerCase()
   }, (err, user) => {
     if(err) throw err;
     if(user) {
@@ -19,7 +19,7 @@ router.post('/signup', (req,res) => {
     }
     else { //if username is not taken check if email is already in use
       User.findOne({
-        email: newUser.email.toLowerCase()
+        'email': newUser.email.toLowerCase()
       }, (err, user) => {
         if(err) throw err;
         if(user) {
@@ -51,8 +51,8 @@ router.post('/login', (req,res) => {
   const userData = req.body.userData;
   console.log(userData);
   User.findOne({
-    lowercaseUsername: userData.username.toLowerCase(),
-    password: userData.password
+    'lowercaseUsername': userData.username.toLowerCase(),
+    'password': userData.password
   }, (err, user) => {
     if(err) throw err;
     if(user) {
