@@ -118,7 +118,8 @@ router.post('/createDilemma', (req, res) => {
 
 router.post('/loadDilemmas', (req, res) => {
   const dilemmaIds = [];
-
+  const votesArray = [];
+  
   User.findOne({
     '_id': req.cookies['id']
   }, (err, user) => {
@@ -135,8 +136,6 @@ router.post('/loadDilemmas', (req, res) => {
           'dilemmaId': {$in: dilemmaIds} //get all the votes on loaded dilemmas for the user
         }, (err,votes) => {
           if(err) throw err;
-          console.log('votes are ' + votes);
-          const votesArray = [];
           dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
             votes.forEach((vote) => {
               if(vote.dilemmaId.toString() === dilemma._id.toString()){
@@ -147,8 +146,6 @@ router.post('/loadDilemmas', (req, res) => {
                 votesArray.push({"voteIndex": -1});
               }
           });
-          console.log('mah votes array ' + votesArray);
-          console.log('mah votes' + votes);
           votes = votesArray;
           res.send({dilemmas, votes});
         })
@@ -159,7 +156,7 @@ router.post('/loadDilemmas', (req, res) => {
     }
   })
 });
-//TODO: optimize some parts of the code,rename stuff so its all the same logic  remove console log,perhaps remove answer votes and do count query
+
 router.post('/newVote', (req, res) => {
   const dilemmaId = req.body.dilemmaId;
   const answerIndex = req.body.answerIndex;
@@ -167,23 +164,34 @@ router.post('/newVote', (req, res) => {
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
-    if(dilemma){
-      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
-        return index === answerIndex ? ++answerVote: answerVote;
-      });
-      dilemma.save();
-      const newVoteModel = new Vote({
+    if(dilemma) {
+      Vote.findOne({
         'userId': req.cookies['id'],
-        'dilemmaId': dilemma._id,
-        'voteIndex': answerIndex
-      });
-      newVoteModel.save((err,vote) => {
+        'dilemmaId': dilemma._id
+      }, (err, vote) => {
         if(err) throw err;
-          res.send({dilemma, vote});
+        if(!vote) {
+          dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+            return index === answerIndex ? ++answerVote : answerVote;
+          });
+          dilemma.save();
+          const newVoteModel = new Vote({
+            'userId': req.cookies['id'],
+            'dilemmaId': dilemma._id,
+            'voteIndex': answerIndex
+          });
+          
+          newVoteModel.save((err, vote) => {
+            if(err) throw err;
+            res.send({dilemma, vote});
+          });
+        }
+        else{
+          res.json({result: 'error: Vote already exists'});
+        }
       });
-
     }
-    else{
+    else {
       res.json({result: 'error: Dilemma not found'});
     }
   });
@@ -197,27 +205,29 @@ router.post('/changeVote', (req, res) => {
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
-    if(dilemma){
-      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
-        if(index === oldAnswerIndex){
-          answerVote--;
-        }
-        else if(index === newAnswerIndex){
-          answerVote++;
-        }
-        return answerVote;
-      });
-      dilemma.save();
+    if(dilemma) {
       Vote.findOne({
         'userId': req.cookies['id'],
         'dilemmaId': dilemma._id,
         'voteIndex': oldAnswerIndex
       }, (err, vote) => {
         if(err) throw err;
-        vote.voteIndex = newAnswerIndex;
-        vote.save();
-        console.log('vote changed' + vote );
-        res.send({dilemma, vote});
+        if(vote){
+          dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+            if(index === oldAnswerIndex) {
+              answerVote--;
+            }
+            else if(index === newAnswerIndex) {
+              answerVote++;
+            }
+            return answerVote;
+          });
+          dilemma.save();
+          vote.voteIndex = newAnswerIndex;
+          vote.save();
+          res.send({dilemma, vote});
+          console.log('test aaaa');
+        }
       })
     }
     else{
@@ -233,15 +243,14 @@ router.post('/removeVote', (req, res) => {
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
-    if(dilemma){
+    if(dilemma) {
       Vote.findOne({
         'userId': req.cookies['id'],
         'dilemmaId': dilemma._id,
         'voteIndex': answerIndex
       }, (err, vote) => {
         if(err) throw err;
-        if(vote){
-          console.log('vote deleted' )
+        if(vote) {
           vote.remove();
           dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
             return index === answerIndex ? --answerVote: answerVote;
@@ -249,12 +258,9 @@ router.post('/removeVote', (req, res) => {
           dilemma.save();
           res.send({dilemma});
         }
-        else{
-          console.log('vote not found')
-        }
       })
     }
-    else{
+    else {
       res.json({result: 'error: Dilemma not found'});
     }
   });
