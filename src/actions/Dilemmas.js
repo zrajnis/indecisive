@@ -52,7 +52,7 @@ export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since
         if (data.result) {// result is "Dilemma not found"
           dispatch(addNewVoteFailure(data.result, dilemmaId));
         }
-        dispatch(addNewVoteSuccess(data.dilemma, data.votes));
+        dispatch(addNewVoteSuccess(data.dilemma, data.vote));
       });
     }).catch( (err) => {
       dispatch(addNewVoteFailure(err));
@@ -60,8 +60,8 @@ export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since
   }
 }
 
-function addNewVoteSuccess(changedDilemma, votes) {
-  return {type: ADD_NEW_VOTE_SUCCESS, changedDilemma: changedDilemma, votes: votes}
+function addNewVoteSuccess(changedDilemma, changedVote) {
+  return {type: ADD_NEW_VOTE_SUCCESS, changedDilemma: changedDilemma, changedVote: changedVote}
 }
 
 function addNewVoteFailure(error, dilemmaId) {

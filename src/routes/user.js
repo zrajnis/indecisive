@@ -4,7 +4,6 @@ const User = require('../models/User');
 const Dilemma = require('../models/Dilemma');
 const Vote = require('../models/Vote');
 
-
 //middleware to verify the token
 router.use((req, res, next) => {
   //check header or url parameters or post parameters for token
@@ -118,6 +117,8 @@ router.post('/createDilemma', (req, res) => {
 });
 
 router.post('/loadDilemmas', (req, res) => {
+  const dilemmaIds = [];
+
   User.findOne({
     '_id': req.cookies['id']
   }, (err, user) => {
@@ -125,20 +126,30 @@ router.post('/loadDilemmas', (req, res) => {
     if(user) {
       Dilemma.find({}, (err, dilemmas) => {
         if(err) throw err;
-        let userVoteIndexes  = [];
-       /* dilemmas.forEach((dilemma, i) => {
-          userVoteIndexes[i] = -1;
-          for(let cnt = 0; cnt < user.dilemmaVotes.length; cnt++) {
-            if(dilemma._id.toString() === user.dilemmaVotes[cnt].dilemmaId.toString()) { //converting both objects to strings for comparisson
-              userVoteIndexes[i] = user.dilemmaVotes[cnt].voteIndex;
-            }
-          }
-        });*/
+        //use more loops than needed but as a result only return votes for loaded dilemmas and map them to co-relate with dilemmas index wise( better scalability and faster response overall)
+        dilemmas.forEach((dilemma) => {
+          dilemmaIds.push(dilemma._id);//array with ids of each dilemma
+        });
         Vote.find({
-          'userId': req.cookies['id']
+          'userId': req.cookies['id'],
+          'dilemmaId': {$in: dilemmaIds} //get all the votes on loaded dilemmas for the user
         }, (err,votes) => {
           if(err) throw err;
           console.log('votes are ' + votes);
+          const votesArray = [];
+          dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
+            votes.forEach((vote) => {
+              if(vote.dilemmaId.toString() === dilemma._id.toString()){
+                votesArray.push(vote);
+              }
+            });
+              if(!votesArray[index]){
+                votesArray.push({"voteIndex": -1});
+              }
+          });
+          console.log('mah votes array ' + votesArray);
+          console.log('mah votes' + votes);
+          votes = votesArray;
           res.send({dilemmas, votes});
         })
       });
@@ -147,9 +158,8 @@ router.post('/loadDilemmas', (req, res) => {
       res.json({result: 'User not found'});
     }
   })
-  
 });
-
+//TODO: optimize some parts of the code,rename stuff so its all the same logic  remove console log,perhaps remove answer votes and do count query
 router.post('/newVote', (req, res) => {
   const dilemmaId = req.body.dilemmaId;
   const answerIndex = req.body.answerIndex;
@@ -167,15 +177,9 @@ router.post('/newVote', (req, res) => {
         'dilemmaId': dilemma._id,
         'voteIndex': answerIndex
       });
-      newVoteModel.save((err) => {
+      newVoteModel.save((err,vote) => {
         if(err) throw err;
-        Vote.find({
-          'userId': req.cookies['id']
-        }, (err,votes) => {
-          if(err) throw err;
-          console.log('found votes ' + votes);
-          res.send({dilemma, votes});
-        })
+          res.send({dilemma, vote});
       });
 
     }
@@ -186,7 +190,6 @@ router.post('/newVote', (req, res) => {
 });
 
 router.post('/changeVote', (req, res) => {
-  console.log('entered change vote')
   const dilemmaId = req.body.dilemmaId;
   const oldAnswerIndex = req.body.oldAnswerIndex;
   const newAnswerIndex = req.body.newAnswerIndex;
@@ -226,23 +229,29 @@ router.post('/changeVote', (req, res) => {
 router.post('/removeVote', (req, res) => {
   const dilemmaId = req.body.dilemmaId;
   const answerIndex = req.body.answerIndex;
-  console.log(dilemmaId);
+
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
     if(dilemma){
-      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
-        return index === answerIndex ? --answerVote: answerVote;
-      });
-      dilemma.save();
-      Vote.findOneAndRemove({
+      Vote.findOne({
         'userId': req.cookies['id'],
         'dilemmaId': dilemma._id,
         'voteIndex': answerIndex
-      }, (err) => {
+      }, (err, vote) => {
         if(err) throw err;
-        console.log('vote deleted' );
-        res.send({dilemma});
+        if(vote){
+          console.log('vote deleted' )
+          vote.remove();
+          dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+            return index === answerIndex ? --answerVote: answerVote;
+          });
+          dilemma.save();
+          res.send({dilemma});
+        }
+        else{
+          console.log('vote not found')
+        }
       })
     }
     else{

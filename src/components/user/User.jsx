@@ -22,8 +22,7 @@ class User extends React.Component {
         {(this.props.dilemmas) ?
           this.props.dilemmas.map((dilemma, index) =>
             <Dilemma dilemma={dilemma} key={index} dilemmaNumber={index}
-               voteIndex={this.props.votes.toString() ?
-               this.props.votes[this.props.votes.findIndex((vote) => vote.dilemmaId === dilemma._id)].voteIndex : -1}
+               voteIndex={this.props.votes[index].voteIndex}
                addNewVote={(index, id) => this.props.dispatch(addNewVote(index, id))}
                changeVote={(oldIndex, newIndex, id) => this.props.dispatch(changeVote(oldIndex, newIndex, id))}
                removeVote={(index, id) => this.props.dispatch(removeVote(index, id))}
