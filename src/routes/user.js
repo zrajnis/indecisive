@@ -146,8 +146,7 @@ router.post('/loadDilemmas', (req, res) => {
                 votesArray.push({"voteIndex": -1});
               }
           });
-          votes = votesArray;
-          res.send({dilemmas, votes});
+          res.send({dilemmas, votes: votesArray});
         })
       });
     }
@@ -156,7 +155,7 @@ router.post('/loadDilemmas', (req, res) => {
     }
   })
 });
-
+//TODO : reduce server response time ona dd new vote to under 300 ms
 router.post('/newVote', (req, res) => {
   const dilemmaId = req.body.dilemmaId;
   const answerIndex = req.body.answerIndex;
@@ -181,10 +180,10 @@ router.post('/newVote', (req, res) => {
             'voteIndex': answerIndex
           });
           
-          newVoteModel.save((err, vote) => {
+          newVoteModel.save((err) => {
             if(err) throw err;
-            res.send({dilemma, vote});
           });
+          res.send({dilemma, vote: newVoteModel});
         }
         else{
           res.json({result: 'error: Vote already exists'});
@@ -226,7 +225,6 @@ router.post('/changeVote', (req, res) => {
           vote.voteIndex = newAnswerIndex;
           vote.save();
           res.send({dilemma, vote});
-          console.log('test aaaa');
         }
       })
     }

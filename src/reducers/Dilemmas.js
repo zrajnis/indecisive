@@ -11,20 +11,16 @@ export default function(state = null, action) {
       });
       break;
     case ADD_NEW_VOTE_SUCCESS:
-      console.log('AAAAAAAAAAAAAA entered NEW VOTE SUCCESS ' + JSON.stringify(action.changedVote))
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
           return dilemma._id === action.changedDilemma._id ? action.changedDilemma : dilemma;
         }),
         votes: state.votes.map((vote, index) => {
-          console.log('vote dilemma index is ' + vote.dilemmaId);
-          console.log('action dilemma id is ' + JSON.stringify(state.data[index]._id))
           return action.changedDilemma._id === state.data[index]._id ? action.changedVote : vote; // vote and dilemma indexes co-relate ( vote on index 0 is in fact vote for dilemma on index 0)
         })
       });
       break;
     case CHANGE_VOTE_SUCCESS:
-      console.log('entered change vote' + action.changedVote)
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
           return dilemma._id === action.changedDilemma._id ? action.changedDilemma : dilemma;
@@ -35,7 +31,6 @@ export default function(state = null, action) {
       });
       break;
     case REMOVE_VOTE_SUCCESS:
-      console.log('entered remove vote')
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
           return dilemma._id === action.changedDilemma._id ? action.changedDilemma : dilemma;
