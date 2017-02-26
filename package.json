@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./src/server.js",
-    "lint": "eslint ./src/server.js",
+    "lint": "eslint ./src/routes",
     "start:webpack": "webpack-dev-server --hot ",
     "auto-start": "nodemon --exec \"npm run lint && npm start\"",
     "start:server": "./src/server.js"
@@ -33,12 +33,13 @@
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.21.0",
-    "babel-preset-es2015": "^6.18.0",
     "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
     "eslint": "^3.14.0",
     "eslint-config-airbnb-base": "^11.0.1",
     "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-react": "^6.10.0",
     "nodemon": "^1.11.0"
   }
 }

@@ -97,7 +97,7 @@ class CreateDilemmaForm extends React.Component {
           }
           setTimeout(() => {
             this.props.dispatch(clearDilemmaMessages());
-          }, 3000)
+          }, 3000);
         });
       });
     }
@@ -145,7 +145,7 @@ const mapStateToProps = (state) => {
     };
   }
   else {
-    return {}
+    return {};
   }
 };
 

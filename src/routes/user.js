@@ -32,54 +32,68 @@ router.get('/', (req, res) => {
   res.render('index', { name: 'Indecisive' });
 });
 
-router.post('/settings', (req, res) => {
+router.post('/settings/changeEmail', (req, res) => {
   const data = req.body.value;
-  const inputType = req.body.type;
-  
-  switch(inputType) {
-    case 'email':
-      User.findOne({
-        'email': data.toLowerCase()
-      }, (err, user) => {
-        if(err) throw err;
-        if(user) {
-          console.log('Email is already in use');
-          res.json({result: 'Email is already in use'});
-        }
-        else {
-          User.findOneAndUpdate({
-              '_id':req.cookies['id']
-            },{$set: {'email': data.toLowerCase()}},
-            {safe: true, upsert: false}, (err) => {
-              if(err) throw err;
-              res.json({result: 'Success'});
-            });
-        }
-      });
-      break;
-    case 'password':
+
+  User.findOne({
+    'email': data.toLowerCase()
+  }, (err, user) => {
+    if(err) throw err;
+    if(user) {
+      console.log('Email is already in use');
+      res.json({result: 'Email is already in use'});
+    }
+    else {
       User.findOneAndUpdate({
           '_id':req.cookies['id']
-        },{$set: {'password': data}},
-        {safe: true, upsert: false}, (err) =>{
+        },{$set: {'email': data.toLowerCase()}},
+        {safe: true, upsert: false}, (err, user) => {
           if(err) throw err;
-          res.json({result:'Success'});
+          if(user) {
+            res.json({result: 'Success'});
+          }
+          else {
+            res.json({result: 'Something unexpected happened'})
+          }
+
         });
-      break;
-    default:
-      res.json({result: 'Something unexpected happened'});
-      break;
-  }
+    }
+  });
+});
+
+router.post('/settings/changePassword', (req, res) => {
+  const data = req.body.value;
+
+  User.findOneAndUpdate({
+      '_id':req.cookies['id']
+    },{$set: {'password': data}},
+    {safe: true, upsert: false}, (err, user) =>{
+      if(err) throw err;
+      if(user) {
+        res.json({result: 'Success'});
+      }
+      else {
+        res.json({result: 'Something unexpected happened'})
+      }
+    });
 });
 
 router.delete('/settings', (req, res) => {
   User.findOneAndRemove({
-    '_id': req.cookies['id']
-  }, (err) => {
-    if (err) throw err;
-    res.clearCookie('token');
-    res.clearCookie('id');
-    res.json({result: 'Success'});
+    '_id': req.cookies['id'],
+    'username' : 'marko'
+  }, (err, user) => {
+    if(err) throw err;
+    if(user) {
+      console.log('user found and deleted');
+      res.clearCookie('token');
+      res.clearCookie('id');
+      res.json({result: 'Success'});
+    }
+    else {
+      res.json({result: 'User not found'})
+    }
+
   })
 });
 
@@ -138,11 +152,11 @@ router.post('/loadDilemmas', (req, res) => {
           if(err) throw err;
           dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
             votes.forEach((vote) => {
-              if(vote.dilemmaId.toString() === dilemma._id.toString()){
+              if(vote.dilemmaId.toString() === dilemma._id.toString()) {
                 votesArray.push(vote);
               }
             });
-              if(!votesArray[index]){
+              if(!votesArray[index]) {
                 votesArray.push({"voteIndex": -1});
               }
           });
@@ -155,7 +169,7 @@ router.post('/loadDilemmas', (req, res) => {
     }
   })
 });
-//TODO : reduce server response time ona dd new vote to under 300 ms
+
 router.post('/newVote', (req, res) => {
   const dilemmaId = req.body.dilemmaId;
   const answerIndex = req.body.answerIndex;

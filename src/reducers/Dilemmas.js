@@ -36,7 +36,7 @@ export default function(state = null, action) {
           return dilemma._id === action.changedDilemma._id ? action.changedDilemma : dilemma;
         }),
         votes: state.votes.map((vote) => {
-          if(vote.dilemmaId === action.changedDilemma._id){
+          if(vote.dilemmaId === action.changedDilemma._id) {
             return {voteIndex: -1}; //since each index of votes co-relates to each index in data we cant splice
           }
           else {
@@ -52,7 +52,7 @@ export default function(state = null, action) {
     case REMOVE_DILEMMA_ERROR:
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
-          if(dilemma._id === action.dilemmaId){
+          if(dilemma._id === action.dilemmaId) {
             dilemma.error = action.error;
           }
           return dilemma;

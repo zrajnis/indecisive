@@ -13,19 +13,19 @@ class NavBar extends React.Component {
   };
   
   openSettingsModal() {
-    this.setState({ isSettingsModalOpen: true })
+    this.setState({isSettingsModalOpen: true});
   }
 
   closeSettingsModal() {
-    this.setState({ isSettingsModalOpen: false });
+    this.setState({isSettingsModalOpen: false});
   }
 
   openCreateDilemmaModal() {
-    this.setState({ isCreateDilemmaModalOpen: true })
+    this.setState({isCreateDilemmaModalOpen: true});
   }
 
   closeCreateDilemmaModal() {
-    this.setState({ isCreateDilemmaModalOpen: false });
+    this.setState({isCreateDilemmaModalOpen: false});
   }
 
   logout() {

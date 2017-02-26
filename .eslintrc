@@ -16,6 +16,9 @@
   "globals": {
 
   },
+  "plugins": [
+    "react"
+  ],
   "rules": {
     "no-console": 1,
     "no-undef": 2,

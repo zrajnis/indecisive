@@ -9,9 +9,7 @@ class User extends React.Component {
     super(props);
   }
 
-  componentDidMount(){
-    this.props.votes ? 
-    console.log('testing how to find vote index ', this.props.votes.findIndex( vote => vote.voteIndex === 0)) : false ;
+  componentDidMount() {
     this.props.dispatch(loadDilemmas());
   }
 
@@ -45,10 +43,10 @@ const mapStateToProps = (state) => {
   else if(state.Dilemmas !== null && state.Dilemmas.error){
     return {
       error: state.Dilemmas.error
-    }
+    };
   }
   else {
-    return {}
+    return {};
   }
 };
 

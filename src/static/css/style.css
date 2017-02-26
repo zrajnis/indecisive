@@ -226,7 +226,7 @@ label{
   color: #233237;
 }
 
-.error, .serverResponse, .errorMsg{
+.error, .serverResponse, .errorMsg, #deactivateError{
   color: red;
 }
 
@@ -240,7 +240,7 @@ label{
   text-align: center;
 }
 
-.message{
+.message, #deactivateError{
   text-align: center;
 }
 
@@ -379,6 +379,11 @@ button:disabled{
   color: limegreen;
   display: inline-block;
   margin-left: 20px;
+}
+
+.successMsgBtn{
+  color: #eddbcd;
+  background: limegreen;
 }
 
 .dilemmaContainer{

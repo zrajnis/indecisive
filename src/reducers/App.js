@@ -15,4 +15,4 @@ const App = combineReducers({
   form: formReducer
 });
 
-export default App
+export default App;

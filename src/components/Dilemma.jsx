@@ -2,12 +2,12 @@ import React from 'react';
 
 
 class Dilemma extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       //answerVoted: -1, //index of answer that user voted for
       isDisplayingVoteResults: false
-    }
+    };
   }
 
   voteAction(index) {
@@ -28,8 +28,6 @@ class Dilemma extends React.Component {
   }
 
   toggleVoteDisplay() {
-    console.log(this.props)
-    console.log(' vote index ' + this.props.voteIndex)
     this.setState({isDisplayingVoteResults: !this.state.isDisplayingVoteResults});
   }
 

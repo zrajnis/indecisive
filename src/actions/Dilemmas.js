@@ -23,16 +23,15 @@ export function loadDilemmas() {
     }).catch( (err) => {
       dispatch(loadDilemmasFailure(err));
     });
-  }
+  };
 }
 
 function loadDataSuccess(data) {
-  console.log(data.votes);
-  return { type: LOAD_DATA_SUCCESS, dilemmas: data.dilemmas, votes: data.votes}
+  return { type: LOAD_DATA_SUCCESS, dilemmas: data.dilemmas, votes: data.votes};
 }
 
 function loadDilemmasFailure(error) {
-  return { type: LOAD_DATA_FAILURE, error: error}
+  return { type: LOAD_DATA_FAILURE, error: error};
 }
 
 export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since you can just make function "vote" and pass url depending whether its adding new one,removing existing or changing a vote
@@ -57,15 +56,15 @@ export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since
     }).catch( (err) => {
       dispatch(addNewVoteFailure(err));
     });
-  }
+  };
 }
 
 function addNewVoteSuccess(changedDilemma, changedVote) {
-  return {type: ADD_NEW_VOTE_SUCCESS, changedDilemma: changedDilemma, changedVote: changedVote}
+  return {type: ADD_NEW_VOTE_SUCCESS, changedDilemma: changedDilemma, changedVote: changedVote};
 }
 
 function addNewVoteFailure(error, dilemmaId) {
-  return {type: ADD_NEW_VOTE_FAILURE, error: error, dilemmaId: dilemmaId}
+  return {type: ADD_NEW_VOTE_FAILURE, error: error, dilemmaId: dilemmaId};
 }
 
 export function changeVote(oldAnswerIndex, newAnswerIndex, dilemmaId) {
@@ -91,15 +90,15 @@ export function changeVote(oldAnswerIndex, newAnswerIndex, dilemmaId) {
     }).catch( (err) => {
       dispatch(changeVoteFailure(err));
     });
-  }
+  };
 }
 
 function changeVoteSuccess(changedDilemma, changedVote) {
-  return {type: CHANGE_VOTE_SUCCESS, changedDilemma: changedDilemma, changedVote: changedVote}
+  return {type: CHANGE_VOTE_SUCCESS, changedDilemma: changedDilemma, changedVote: changedVote};
 }
 
 function changeVoteFailure(error, dilemmaId) {
-  return {type: CHANGE_VOTE_FAILURE, error: error, dilemmaId: dilemmaId}
+  return {type: CHANGE_VOTE_FAILURE, error: error, dilemmaId: dilemmaId};
 }
 
 export function removeVote(answerIndex, dilemmaId) {
@@ -117,24 +116,24 @@ export function removeVote(answerIndex, dilemmaId) {
     }).then((response) => {
       response.json().then((data) => {
         if (data.result) {// result is "Dilemma not found"
-         dispatch(removeVoteFailure(data.result, dilemmaId));
+          dispatch(removeVoteFailure(data.result, dilemmaId));
         }
         dispatch(removeVoteSuccess(data.dilemma));
-    }).catch((err) => {
-      dispatch(removeVoteFailure(err));
+      }).catch((err) => {
+        dispatch(removeVoteFailure(err));
+      });
     });
-  })
-  }
+  };
 }
 
 function removeVoteSuccess(changedDilemma) {
-  return {type: REMOVE_VOTE_SUCCESS, changedDilemma: changedDilemma}
+  return {type: REMOVE_VOTE_SUCCESS, changedDilemma: changedDilemma};
 }
 
 function removeVoteFailure(error, dilemmaId) {
-  return {type: REMOVE_VOTE_FAILURE, error: error, dilemmaId: dilemmaId}
+  return {type: REMOVE_VOTE_FAILURE, error: error, dilemmaId: dilemmaId};
 }
 
 export function removeDilemmaError(dilemmaId) {
-  return {type: REMOVE_DILEMMA_ERROR, error: '', dilemmaId: dilemmaId}
+  return {type: REMOVE_DILEMMA_ERROR, error: '', dilemmaId: dilemmaId};
 }
