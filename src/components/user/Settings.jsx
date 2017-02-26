@@ -28,10 +28,6 @@ class Settings extends React.Component {
     this.setState({isDeactivateActive: false});
   }
 
-  deactivateAccount() {
-    
-  };
-
   changeData(type, id) { // accepts type of input field from which we determine what kind of change it is,and value
     const input = document.getElementById(id);
     const error = validate(type, input.value);
@@ -66,9 +62,11 @@ class Settings extends React.Component {
     return (
       <div id="settingsContainer" >
         <label htmlFor="changeEmail">Change the email:</label>
-        <SettingsField id="changeEmail" type="email" errorMsg={this.props.emailError} changeData={this.changeData}/>
+        <SettingsField id="changeEmail" type="email" errorMsg={this.props.emailError} 
+          successMsg={this.props.successEmailMsg} changeData={this.changeData}/>
         <label htmlFor="changePassword">Change the password:</label>
-        <SettingsField id="changePassword" type="password" errorMsg={this.props.passwordError} changeData={this.changeData}/>
+        <SettingsField id="changePassword" type="password" errorMsg={this.props.passwordError}
+          successMsg={this.props.successPasswordMsg} changeData={this.changeData}/>
         <div id="deactivateContainer">
           {this.state.isDeactivateActive ?
             <div id="deactivateConfirmationContainer">
@@ -91,7 +89,9 @@ const mapStateToProps = (state) => {
     return {
       emailError: state.Settings.emailError,
       passwordError: state.Settings.passwordError,
-      deactivateError: state.Settings.deactivateError
+      deactivateError: state.Settings.deactivateError,
+      successEmailMsg: state.Settings.successEmailMsg,
+      successPasswordMsg: state.Settings.successPasswordMsg
     };
   }
   else {

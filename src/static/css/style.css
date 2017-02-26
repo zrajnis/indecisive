@@ -230,7 +230,6 @@ label{
   color: red;
 }
 
-
 .serverResponse{
   width: 150px;
   text-align: center;
@@ -380,6 +379,11 @@ button:disabled{
   color: limegreen;
   display: inline-block;
   margin-left: 20px;
+}
+
+.successMsgBtn{
+  color: #eddbcd;
+  background: limegreen;
 }
 
 .dilemmaContainer{

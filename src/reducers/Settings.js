@@ -1,6 +1,6 @@
-import {SETTINGS_EMAIL_SERVER_RESPONSE, SETTINGS_CLEAR_ERROR_MSG,
-  SETTINGS_FAILED_EMAIL_VALIDATION, SETTINGS_FAILED_PASSWORD_VALIDATION, SETTINGS_DEACTIVATE_ACCOUNT_FAILURE
-  } from '../actions/Settings';
+import {SETTINGS_CHANGE_EMAIL_SUCCESS, SETTINGS_CHANGE_PASSWORD_SUCCESS,SETTINGS_EMAIL_SERVER_RESPONSE,
+  SETTINGS_CLEAR_ERROR_MSG, SETTINGS_FAILED_EMAIL_VALIDATION, SETTINGS_FAILED_PASSWORD_VALIDATION,
+  SETTINGS_DEACTIVATE_ACCOUNT_FAILURE} from '../actions/Settings';
 
 export default function(state = null, action) {
   switch(action.type) {
@@ -9,10 +9,14 @@ export default function(state = null, action) {
     case SETTINGS_FAILED_PASSWORD_VALIDATION:
     case SETTINGS_CLEAR_ERROR_MSG:
     case SETTINGS_DEACTIVATE_ACCOUNT_FAILURE:
+    case SETTINGS_CHANGE_EMAIL_SUCCESS:
+    case SETTINGS_CHANGE_PASSWORD_SUCCESS:
       return Object.assign({}, state, {
         emailError: action.emailError ? action.emailError : '',
         passwordError: action.passwordError ? action.passwordError : '',
-        deactivateError: action.deactivateError ? action.deactivateError : ''
+        deactivateError: action.deactivateError ? action.deactivateError : '',
+        successEmailMsg: action.successEmailMsg ? action.successEmailMsg : '',
+        successPasswordMsg: action.successPasswordMsg ? action.successPasswordMsg : ''
       });
       break;
     default:
