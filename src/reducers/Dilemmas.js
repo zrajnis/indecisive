@@ -6,42 +6,42 @@ export default function(state = null, action) {
   switch(action.type) {
     case LOAD_DATA_SUCCESS:
       return Object.assign({}, state, {
-        data: action.dilemmas.map((dilemma, index) => {
-          dilemma.voteIndex = action.userVoteIndexes[index];
-          return dilemma;
-        })
+        data: action.dilemmas,
+        votes: action.votes
       });
       break;
     case ADD_NEW_VOTE_SUCCESS:
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
-          if(dilemma._id === action.changedDilemma._id){
-            dilemma = action.changedDilemma;
-            dilemma.voteIndex = action.answerIndex;
-          }
-          return dilemma;
+          return dilemma._id === action.changedDilemma._id ? action.changedDilemma : dilemma;
+        }),
+        votes: state.votes.map((vote, index) => {
+          return action.changedDilemma._id === state.data[index]._id ? action.changedVote : vote; // vote and dilemma indexes co-relate ( vote on index 0 is in fact vote for dilemma on index 0)
         })
       });
       break;
     case CHANGE_VOTE_SUCCESS:
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
-          if(dilemma._id === action.changedDilemma._id){
-            dilemma = action.changedDilemma;
-            dilemma.voteIndex = action.newAnswerIndex;
-          }
-          return dilemma;
+          return dilemma._id === action.changedDilemma._id ? action.changedDilemma : dilemma;
+        }),
+        votes: state.votes.map((vote) => {
+          return vote.dilemmaId === action.changedDilemma._id ? action.changedVote : vote;
         })
       });
       break;
     case REMOVE_VOTE_SUCCESS:
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
-          if(dilemma._id === action.changedDilemma._id){
-            dilemma = action.changedDilemma;
-            dilemma.voteIndex = - 1;
+          return dilemma._id === action.changedDilemma._id ? action.changedDilemma : dilemma;
+        }),
+        votes: state.votes.map((vote) => {
+          if(vote.dilemmaId === action.changedDilemma._id){
+            return {voteIndex: -1}; //since each index of votes co-relates to each index in data we cant splice
           }
-          return dilemma;
+          else {
+            return vote;
+          }
         })
       });
       break;

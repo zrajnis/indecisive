@@ -2,6 +2,7 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Dilemma = require('../models/Dilemma');
+const Vote = require('../models/Vote');
 
 //middleware to verify the token
 router.use((req, res, next) => {
@@ -116,6 +117,9 @@ router.post('/createDilemma', (req, res) => {
 });
 
 router.post('/loadDilemmas', (req, res) => {
+  const dilemmaIds = [];
+  const votesArray = [];
+  
   User.findOne({
     '_id': req.cookies['id']
   }, (err, user) => {
@@ -123,25 +127,35 @@ router.post('/loadDilemmas', (req, res) => {
     if(user) {
       Dilemma.find({}, (err, dilemmas) => {
         if(err) throw err;
-        let userVoteIndexes  = [];
-        dilemmas.forEach((dilemma, i) => {
-          userVoteIndexes[i] = -1;
-          for(let cnt = 0; cnt < user.dilemmaVotes.length; cnt++) {
-            if(dilemma._id.toString() === user.dilemmaVotes[cnt].dilemmaId.toString()) { //converting both objects to strings for comparisson
-              userVoteIndexes[i] = user.dilemmaVotes[cnt].voteIndex;
-            }
-          }
+        //use more loops than needed but as a result only return votes for loaded dilemmas and map them to co-relate with dilemmas index wise( better scalability and faster response overall)
+        dilemmas.forEach((dilemma) => {
+          dilemmaIds.push(dilemma._id);//array with ids of each dilemma
         });
-        res.send({dilemmas, userVoteIndexes});
+        Vote.find({
+          'userId': req.cookies['id'],
+          'dilemmaId': {$in: dilemmaIds} //get all the votes on loaded dilemmas for the user
+        }, (err,votes) => {
+          if(err) throw err;
+          dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
+            votes.forEach((vote) => {
+              if(vote.dilemmaId.toString() === dilemma._id.toString()){
+                votesArray.push(vote);
+              }
+            });
+              if(!votesArray[index]){
+                votesArray.push({"voteIndex": -1});
+              }
+          });
+          res.send({dilemmas, votes: votesArray});
+        })
       });
     }
     else{
       res.json({result: 'User not found'});
     }
   })
-  
 });
-
+//TODO : reduce server response time ona dd new vote to under 300 ms
 router.post('/newVote', (req, res) => {
   const dilemmaId = req.body.dilemmaId;
   const answerIndex = req.body.answerIndex;
@@ -149,21 +163,34 @@ router.post('/newVote', (req, res) => {
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
-    if(dilemma){
-      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
-        return index === answerIndex ? ++answerVote: answerVote;
-      });
-      dilemma.save();
-      User.findOne({
-        '_id': req.cookies['id']
-      }, (err, user) => {
+    if(dilemma) {
+      Vote.findOne({
+        'userId': req.cookies['id'],
+        'dilemmaId': dilemma._id
+      }, (err, vote) => {
         if(err) throw err;
-        user.dilemmaVotes.push({dilemmaId: dilemma._id, voteIndex: answerIndex});
-        user.save();
+        if(!vote) {
+          dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+            return index === answerIndex ? ++answerVote : answerVote;
+          });
+          dilemma.save();
+          const newVoteModel = new Vote({
+            'userId': req.cookies['id'],
+            'dilemmaId': dilemma._id,
+            'voteIndex': answerIndex
+          });
+          
+          newVoteModel.save((err) => {
+            if(err) throw err;
+          });
+          res.send({dilemma, vote: newVoteModel});
+        }
+        else{
+          res.json({result: 'error: Vote already exists'});
+        }
       });
-      res.send(dilemma);
     }
-    else{
+    else {
       res.json({result: 'error: Dilemma not found'});
     }
   });
@@ -177,30 +204,29 @@ router.post('/changeVote', (req, res) => {
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
-    if(dilemma){
-      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
-        if(index === oldAnswerIndex){
-          answerVote--;
-        }
-        else if(index === newAnswerIndex){
-          answerVote++;
-        }
-        return answerVote;
-      });
-      dilemma.save();
-      User.findOne({
-        '_id': req.cookies['id']
-      }, (err, user) => {
+    if(dilemma) {
+      Vote.findOne({
+        'userId': req.cookies['id'],
+        'dilemmaId': dilemma._id,
+        'voteIndex': oldAnswerIndex
+      }, (err, vote) => {
         if(err) throw err;
-        user.dilemmaVotes.forEach((dilemmaVote) => {
-          if (dilemmaVote.dilemmaId.toString() === dilemma._id.toString()) {
-            dilemmaVote.voteIndex = newAnswerIndex;
-          }
-        });
-        user.save();
-        console.log('dilemma votes are ' + user.dilemmaVotes);
-      });
-      res.send(dilemma);
+        if(vote){
+          dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+            if(index === oldAnswerIndex) {
+              answerVote--;
+            }
+            else if(index === newAnswerIndex) {
+              answerVote++;
+            }
+            return answerVote;
+          });
+          dilemma.save();
+          vote.voteIndex = newAnswerIndex;
+          vote.save();
+          res.send({dilemma, vote});
+        }
+      })
     }
     else{
       res.json({result: 'error: Dilemma not found'});
@@ -211,30 +237,28 @@ router.post('/changeVote', (req, res) => {
 router.post('/removeVote', (req, res) => {
   const dilemmaId = req.body.dilemmaId;
   const answerIndex = req.body.answerIndex;
-  console.log(dilemmaId);
+
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
-    if(dilemma){
-      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
-        return index === answerIndex ? --answerVote: answerVote;
-      });
-      dilemma.save();
-      User.findOne({
-          '_id': req.cookies['id']
-        }, (err, user) => {
-          if(err) throw err;
-        user.dilemmaVotes.forEach((dilemmaVote, index) => {
-          if(dilemmaVote.dilemmaId.toString() === dilemma._id.toString()){
-            user.dilemmaVotes.splice(index, 1);
-          }
-        });
-          user.save();
-          console.log(user.dilemmaVotes)
-        });
-      res.send(dilemma);
+    if(dilemma) {
+      Vote.findOne({
+        'userId': req.cookies['id'],
+        'dilemmaId': dilemma._id,
+        'voteIndex': answerIndex
+      }, (err, vote) => {
+        if(err) throw err;
+        if(vote) {
+          vote.remove();
+          dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+            return index === answerIndex ? --answerVote: answerVote;
+          });
+          dilemma.save();
+          res.send({dilemma});
+        }
+      })
     }
-    else{
+    else {
       res.json({result: 'error: Dilemma not found'});
     }
   });
