@@ -13,14 +13,14 @@ class Modal extends React.Component {
         {!this.props.noBackdrop &&
         <div className={this.props.backdropClassName} onClick={e => this.close(e)}/>}
       </div>
-    )
+    );
   }
 
   close(e) {
     e.preventDefault();
 
     if(this.props.onClose) {
-      this.props.onClose()
+      this.props.onClose();
     }
   }
 }

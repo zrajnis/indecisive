@@ -13,7 +13,7 @@ class NavBar extends React.Component {
   };
   
   openSettingsModal() {
-    this.setState({ isSettingsModalOpen: true })
+    this.setState({ isSettingsModalOpen: true });
   }
 
   closeSettingsModal() {
@@ -21,7 +21,7 @@ class NavBar extends React.Component {
   }
 
   openCreateDilemmaModal() {
-    this.setState({ isCreateDilemmaModalOpen: true })
+    this.setState({ isCreateDilemmaModalOpen: true });
   }
 
   closeCreateDilemmaModal() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {serverUsernameResponse, serverEmailResponse, failedUsernameValidation,
+import {changeEmail, changePassword, deactivateAccount,
   failedEmailValidation, failedPasswordValidation, clearErrorMsg} from '../../actions/Settings';
 import SettingsField from './SettingsField.jsx';
 const validate = require('../../validator').validateSettings;
@@ -19,61 +19,37 @@ class Settings extends React.Component {
   }
 
   showDeactivateField() {
+    this.props.dispatch(clearErrorMsg());
     this.setState({isDeactivateActive: true});
   }
 
   hideDeactivateField() {
+    this.props.dispatch(clearErrorMsg());
     this.setState({isDeactivateActive: false});
   }
 
   deactivateAccount() {
-    fetch('/user/settings', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'same-origin'
-    }).then(() => {
-      window.location.href='http://localhost:3000';
-    });
+    
   };
 
   changeData(type, id) { // accepts type of input field from which we determine what kind of change it is,and value
     const input = document.getElementById(id);
     const error = validate(type, input.value);
+
     if(input.value.trim() && !error) {
-      fetch('/user/settings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          type: type,
-          value: input.value.trim()
-        }),
-        credentials: 'same-origin'
-      }).then((response) => {
-        response.json().then((data) => {
-          switch(data.result ) {
-            case 'Success':
-              input.value = '';
-              this.props.dispatch(clearErrorMsg());
-              break;
-            case 'Email is already in use':
-              this.props.dispatch(serverEmailResponse(data.result));
-              break;
-            default:
-              console.log('something unexpected happened');
-              break;
-          }
-        });
-      });
+      switch (type) {
+        case 'email':
+          this.props.dispatch(changeEmail(input));
+          break;
+        case 'password':
+          this.props.dispatch(changePassword(input));
+          break;
+        default:
+          break;
+      }
     }
     else if(input.value.trim() && error) {
       switch(type) {
-        case 'text':
-          this.props.dispatch(failedUsernameValidation(error));
-          break;
         case 'email':
           this.props.dispatch(failedEmailValidation(error));
           break;
@@ -81,7 +57,6 @@ class Settings extends React.Component {
           this.props.dispatch(failedPasswordValidation(error));
           break;
         default:
-          console.log('something unexpected happened');
           break;
       }
     }
@@ -98,8 +73,9 @@ class Settings extends React.Component {
           {this.state.isDeactivateActive ?
             <div id="deactivateConfirmationContainer">
               <div id="deactivateDecision">Are you sure that you want to deactivate your account?</div>
-              <button type="button" id="confirmDeactivationBtn" onClick={() => this.deactivateAccount()}>Yes</button>
+              <button type="button" id="confirmDeactivationBtn" onClick={() => this.props.dispatch(deactivateAccount())}>Yes</button>
               <button type="button" id="declineDeactivationBtn" onClick={() => this.hideDeactivateField()}>No</button>
+              <div id="deactivateError">{this.props.deactivateError}</div>
             </div>
             :
             <button type="button" id="deactivateBtn" onClick={() => this.showDeactivateField()}>Deactivate </button>
@@ -114,7 +90,8 @@ const mapStateToProps = (state) => {
   if(state.Settings !== null) {
     return {
       emailError: state.Settings.emailError,
-      passwordError: state.Settings.passwordError
+      passwordError: state.Settings.passwordError,
+      deactivateError: state.Settings.deactivateError
     };
   }
   else {

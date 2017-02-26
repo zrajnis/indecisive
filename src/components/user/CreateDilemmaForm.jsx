@@ -145,7 +145,7 @@ const mapStateToProps = (state) => {
     };
   }
   else {
-    return {}
+    return {};
   }
 };
 

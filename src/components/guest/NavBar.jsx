@@ -14,7 +14,7 @@ class NavBar extends React.Component {
   };
   
   openSignupModal() {
-    this.setState({ isSignupModalOpen: true })
+    this.setState({ isSignupModalOpen: true });
   }
 
   closeSignupModal() {
@@ -26,7 +26,7 @@ class NavBar extends React.Component {
   }
 
   openLoginModal() {
-    this.setState({ isLoginModalOpen: true })
+    this.setState({ isLoginModalOpen: true });
   }
 
   closeLoginModal() {

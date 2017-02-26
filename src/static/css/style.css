@@ -226,9 +226,10 @@ label{
   color: #233237;
 }
 
-.error, .serverResponse, .errorMsg{
+.error, .serverResponse, .errorMsg, #deactivateError{
   color: red;
 }
+
 
 .serverResponse{
   width: 150px;
@@ -240,7 +241,7 @@ label{
   text-align: center;
 }
 
-.message{
+.message, #deactivateError{
   text-align: center;
 }
 
