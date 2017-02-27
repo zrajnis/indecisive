@@ -36,7 +36,7 @@ function loadDilemmasFailure(error) {
 
 export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since you can just make function "vote" and pass url depending whether its adding new one,removing existing or changing a vote
   return (dispatch) => {  //this approach is more thorough and logically makes more sense from aspect of someone who's reading the dilemma.jsx file
-    fetch('/user/newVote', {
+    fetch('/user/vote/new', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -69,7 +69,7 @@ function addNewVoteFailure(error, dilemmaId) {
 
 export function changeVote(oldAnswerIndex, newAnswerIndex, dilemmaId) {
   return (dispatch) => {
-    fetch('/user/changeVote', {
+    fetch('/user/vote/change', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -103,7 +103,7 @@ function changeVoteFailure(error, dilemmaId) {
 
 export function removeVote(answerIndex, dilemmaId) {
   return (dispatch) => {
-    fetch('/user/removeVote', {
+    fetch('/user/vote/remove', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

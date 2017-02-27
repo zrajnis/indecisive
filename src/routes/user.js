@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const Dilemma = require('../models/Dilemma');
 const Vote = require('../models/Vote');
+const Dilemma = require('../models/Dilemma');
 
 //middleware to verify the token
 router.use((req, res, next) => {
@@ -80,8 +80,7 @@ router.post('/settings/changePassword', (req, res) => {
 
 router.delete('/settings', (req, res) => {
   User.findOneAndRemove({
-    '_id': req.cookies['id'],
-    'username' : 'marko'
+    '_id': req.cookies['id']
   }, (err, user) => {
     if(err) throw err;
     if(user) {
@@ -168,114 +167,6 @@ router.post('/loadDilemmas', (req, res) => {
       res.json({result: 'User not found'});
     }
   })
-});
-
-router.post('/newVote', (req, res) => {
-  const dilemmaId = req.body.dilemmaId;
-  const answerIndex = req.body.answerIndex;
-
-  Dilemma.findOne({
-    '_id': dilemmaId}, (err, dilemma) => {
-    if(err) throw err;
-    if(dilemma) {
-      Vote.findOne({
-        'userId': req.cookies['id'],
-        'dilemmaId': dilemma._id
-      }, (err, vote) => {
-        if(err) throw err;
-        if(!vote) {
-          dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
-            return index === answerIndex ? ++answerVote : answerVote;
-          });
-          dilemma.save();
-          const newVoteModel = new Vote({
-            'userId': req.cookies['id'],
-            'dilemmaId': dilemma._id,
-            'voteIndex': answerIndex
-          });
-          
-          newVoteModel.save((err) => {
-            if(err) throw err;
-          });
-          res.send({dilemma, vote: newVoteModel});
-        }
-        else{
-          res.json({result: 'error: Vote already exists'});
-        }
-      });
-    }
-    else {
-      res.json({result: 'error: Dilemma not found'});
-    }
-  });
-});
-
-router.post('/changeVote', (req, res) => {
-  const dilemmaId = req.body.dilemmaId;
-  const oldAnswerIndex = req.body.oldAnswerIndex;
-  const newAnswerIndex = req.body.newAnswerIndex;
-
-  Dilemma.findOne({
-    '_id': dilemmaId}, (err, dilemma) => {
-    if(err) throw err;
-    if(dilemma) {
-      Vote.findOne({
-        'userId': req.cookies['id'],
-        'dilemmaId': dilemma._id,
-        'voteIndex': oldAnswerIndex
-      }, (err, vote) => {
-        if(err) throw err;
-        if(vote){
-          dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
-            if(index === oldAnswerIndex) {
-              answerVote--;
-            }
-            else if(index === newAnswerIndex) {
-              answerVote++;
-            }
-            return answerVote;
-          });
-          dilemma.save();
-          vote.voteIndex = newAnswerIndex;
-          vote.save();
-          res.send({dilemma, vote});
-        }
-      })
-    }
-    else{
-      res.json({result: 'error: Dilemma not found'});
-    }
-  });
-});
-
-router.post('/removeVote', (req, res) => {
-  const dilemmaId = req.body.dilemmaId;
-  const answerIndex = req.body.answerIndex;
-
-  Dilemma.findOne({
-    '_id': dilemmaId}, (err, dilemma) => {
-    if(err) throw err;
-    if(dilemma) {
-      Vote.findOne({
-        'userId': req.cookies['id'],
-        'dilemmaId': dilemma._id,
-        'voteIndex': answerIndex
-      }, (err, vote) => {
-        if(err) throw err;
-        if(vote) {
-          vote.remove();
-          dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
-            return index === answerIndex ? --answerVote: answerVote;
-          });
-          dilemma.save();
-          res.send({dilemma});
-        }
-      })
-    }
-    else {
-      res.json({result: 'error: Dilemma not found'});
-    }
-  });
 });
 
 router.post('/logout', (req, res) => {

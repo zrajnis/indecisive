@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const routes = require('./routes');
 const indexRoutes = require('./routes/index');
 const userRoutes = require('./routes/user');
+const voteRoutes = require('./routes/vote');
 const config = require('./config.js');
 
 app.set('port', process.env.PORT || 3000);
@@ -31,6 +32,7 @@ app.use(cookieParser());
 //set routes
 app.use('/', indexRoutes);
 app.use('/user', userRoutes);
+app.use('/user/vote', voteRoutes);
 
 app.use(express.static(path.join(__dirname, 'static')));
 
