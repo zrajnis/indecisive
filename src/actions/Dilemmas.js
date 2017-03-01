@@ -8,9 +8,9 @@ export const REMOVE_VOTE_SUCCESS = 'REMOVE_VOTE_SUCCESS';
 export const REMOVE_VOTE_FAILURE = 'REMOVE_VOTE_FAILURE';
 export const REMOVE_DILEMMA_ERROR = 'REMOVE_DILEMMA_ERROR';
 
-export function loadDilemmas() {
+export function loadDilemmas(tabName) {
   return (dispatch) => {
-    fetch('/user/loadDilemmas', {
+    fetch('/dilemma/load/' + tabName, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

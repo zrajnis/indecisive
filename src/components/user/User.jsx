@@ -10,14 +10,18 @@ class User extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(loadDilemmas());
+    this.props.dispatch(loadDilemmas('home'));
+  }
+
+  load(tabName) {
+    this.props.dispatch(loadDilemmas(tabName));
   }
 
   render() {
     return (
       <div id="container">
-        <NavBar/>
-        {(this.props.dilemmas) ?
+        <NavBar load={(tabName) => this.load(tabName)}/>
+        {this.props.dilemmas ?
           this.props.dilemmas.map((dilemma, index) =>
             <Dilemma dilemma={dilemma} key={index} dilemmaNumber={index}
                voteIndex={this.props.votes[index].voteIndex}

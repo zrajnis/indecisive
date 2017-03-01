@@ -28,8 +28,8 @@ router.use((req, res, next) => {
   }
 });
 
-router.get('/', (req, res) => {
-  res.render('index', { name: 'Indecisive' });
+router.get('/*', (req, res) => {
+  res.render('index', {name: 'Indecisive'});
 });
 
 router.post('/settings/changeEmail', (req, res) => {
@@ -93,79 +93,6 @@ router.delete('/settings', (req, res) => {
       res.json({result: 'User not found'})
     }
 
-  })
-});
-
-router.post('/createDilemma', (req, res) => {
-  const newDilemma = req.body.dilemmaData;
-  const timestamp = new Date().toLocaleString('en-GB'); //im well aware timestamp can be pulled out of ObjectId().getTimestamp(), i prefer this logic though
-  let answerVotes = newDilemma.answers.slice(); //copy array by val
-  answerVotes.forEach((answer, index) => { //change all values to 0
-    answerVotes[index] = 0;
-  });
-
-  User.findOne({
-    '_id': req.cookies['id']
-  }, (err, user) => {
-    if (err) throw err;
-    if (user) {
-      const newDilemmaModel = new Dilemma({
-        title: newDilemma.title,
-        description: newDilemma.description,
-        answers: newDilemma.answers,
-        answerVotes: answerVotes,
-        timestamp: timestamp,
-        author: user.username
-      });
-
-      newDilemmaModel.save((err) => {
-        if (err) throw err;
-      });
-      res.json({result: 'Dilemma created'});
-    }
-    else {
-      res.json({result: 'User not found'});
-    }
-  });
-});
-
-router.post('/loadDilemmas', (req, res) => {
-  const dilemmaIds = [];
-  const votesArray = [];
-  
-  User.findOne({
-    '_id': req.cookies['id']
-  }, (err, user) => {
-    if(err) throw err;
-    if(user) {
-      Dilemma.find({}, (err, dilemmas) => {
-        if(err) throw err;
-        //use more loops than needed but as a result only return votes for loaded dilemmas and map them to co-relate with dilemmas index wise( better scalability and faster response overall)
-        dilemmas.forEach((dilemma) => {
-          dilemmaIds.push(dilemma._id);//array with ids of each dilemma
-        });
-        Vote.find({
-          'userId': req.cookies['id'],
-          'dilemmaId': {$in: dilemmaIds} //get all the votes on loaded dilemmas for the user
-        }, (err,votes) => {
-          if(err) throw err;
-          dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
-            votes.forEach((vote) => {
-              if(vote.dilemmaId.toString() === dilemma._id.toString()) {
-                votesArray.push(vote);
-              }
-            });
-              if(!votesArray[index]) {
-                votesArray.push({"voteIndex": -1});
-              }
-          });
-          res.send({dilemmas, votes: votesArray});
-        })
-      });
-    }
-    else{
-      res.json({result: 'User not found'});
-    }
   })
 });
 

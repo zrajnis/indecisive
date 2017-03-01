@@ -31,7 +31,7 @@ router.post('/new', (req, res) => {
           });
           res.send({dilemma, vote: newVoteModel});
         }
-        else{
+        else {
           res.json({result: 'error: Vote already exists'});
         }
       });
@@ -57,7 +57,7 @@ router.post('/change', (req, res) => {
         'voteIndex': oldAnswerIndex
       }, (err, vote) => {
         if(err) throw err;
-        if(vote){
+        if(vote) {
           dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
             if(index === oldAnswerIndex) {
               answerVote--;
@@ -74,7 +74,7 @@ router.post('/change', (req, res) => {
         }
       })
     }
-    else{
+    else {
       res.json({result: 'error: Dilemma not found'});
     }
   });

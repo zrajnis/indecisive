@@ -70,7 +70,7 @@ class CreateDilemmaForm extends React.Component {
       this.setState({wasClicked: false});
     }
     else {
-      fetch('/user/createDilemma', { //otherwise user submitted the form and tried to create a playlist
+      fetch('/dilemma/create', { //otherwise user submitted the form and tried to create a playlist
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from '../Modal.jsx';
 import SignupForm from './SignupForm.jsx';
 import LoginForm from './LoginForm.jsx';
+import {Link} from 'react-router';
 
 class NavBar extends React.Component {
   constructor(props) {
@@ -38,9 +39,9 @@ class NavBar extends React.Component {
       <div id="navBarContainer">
         <nav id="navBar">
           <ul id="navBarList">
-            <li><a className="active" href="/">Home</a></li>
-            <li><a href="#hot">Hot</a></li>
-            <li><a href="#newest">Newest</a></li>
+            <li><Link to="/" onClick={() => this.props.load('home')}>Home</Link></li>
+            <li><Link to="/hot" onClick={() => this.props.load('hot')}>Hot</Link></li>
+            <li><Link to="/newest" onClick={() => this.props.load('newest')}>Newest</Link></li>
           </ul>
           <div id="searchFormContainer">
             <form id="searchForm" href="#search">
