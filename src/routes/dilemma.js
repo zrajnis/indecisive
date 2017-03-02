@@ -3,6 +3,38 @@ const User = require('../models/User');
 const Vote = require('../models/Vote');
 const Dilemma = require('../models/Dilemma');
 
+function mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res) {
+  if(user) { //if logged in
+    //use more loops than needed but as a result only return votes for loaded dilemmas and map them to co-relate with dilemmas index wise( better scalability and faster response overall)
+    dilemmas.forEach((dilemma) => {
+      dilemmaIds.push(dilemma._id);//array with ids of each dilemma
+    });
+    Vote.find({
+      'userId': req.cookies['id'],
+      'dilemmaId': {$in: dilemmaIds} //get all the votes on loaded dilemmas for the user
+    }, (err, votes) => {
+      if (err) throw err;
+      dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
+        votes.forEach((vote) => {
+          if (vote.dilemmaId.toString() === dilemma._id.toString()) {
+            votesArray.push(vote);
+          }
+        });
+        if (!votesArray[index]) {
+          votesArray.push({"voteIndex": -1});
+        }
+      });
+      res.send({dilemmas, votes: votesArray});
+    })
+  }
+  else { //guest
+    dilemmas.forEach(() => { //since guest is not logged in map each vote with index -1
+      votesArray.push({"voteIndex": -1});
+    });
+    res.send({dilemmas, votes: votesArray});
+  }
+}
+
 router.post('/create', (req, res) => {
   const newDilemma = req.body.dilemmaData;
   const timestamp = new Date().toLocaleString('uk-UA'); //im well aware timestamp can be pulled out of ObjectId().getTimestamp()
@@ -46,35 +78,7 @@ router.post('/load/home', (req, res) => {
     if(err) throw err;
     Dilemma.find({}, (err, dilemmas) => {
       if(err) throw err;
-      if(user) {
-        //use more loops than needed but as a result only return votes for loaded dilemmas and map them to co-relate with dilemmas index wise( better scalability and faster response overall)
-        dilemmas.forEach((dilemma) => {
-          dilemmaIds.push(dilemma._id);//array with ids of each dilemma
-        });
-        Vote.find({
-          'userId': req.cookies['id'],
-          'dilemmaId': {$in: dilemmaIds} //get all the votes on loaded dilemmas for the user
-        }, (err, votes) => {
-          if (err) throw err;
-          dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
-            votes.forEach((vote) => {
-              if (vote.dilemmaId.toString() === dilemma._id.toString()) {
-                votesArray.push(vote);
-              }
-            });
-            if (!votesArray[index]) {
-              votesArray.push({"voteIndex": -1});
-            }
-          });
-          res.send({dilemmas, votes: votesArray});
-        })
-      }
-      else {
-        dilemmas.forEach(() => { //since guest is not logged in map each vote with index -1
-            votesArray.push({"voteIndex": -1});
-        });
-        res.send({dilemmas,votes: votesArray});
-      }
+      mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
     });
   })
 });
@@ -88,35 +92,7 @@ router.post('/load/newest', (req, res) => {
   }, (err, user) => {
     if(err) throw err;
     Dilemma.find().sort({timestamp : -1}).then((dilemmas) => {
-      if(user) {
-        //use more loops than needed but as a result only return votes for loaded dilemmas and map them to co-relate with dilemmas index wise( better scalability and faster response overall)
-        dilemmas.forEach((dilemma) => {
-          dilemmaIds.push(dilemma._id);//array with ids of each dilemma
-        });
-        Vote.find({
-          'userId': req.cookies['id'],
-          'dilemmaId': {$in: dilemmaIds} //get all the votes on loaded dilemmas for the user
-        }, (err, votes) => {
-          if (err) throw err;
-          dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
-            votes.forEach((vote) => {
-              if (vote.dilemmaId.toString() === dilemma._id.toString()) {
-                votesArray.push(vote);
-              }
-            });
-            if (!votesArray[index]) {
-              votesArray.push({"voteIndex": -1});
-            }
-          });
-          res.send({dilemmas, votes: votesArray});
-        })
-      }
-      else {
-        dilemmas.forEach(() => { //since guest is not logged in map each vote with index -1
-            votesArray.push({"voteIndex": -1});
-        });
-        res.send({dilemmas, votes: votesArray});
-      }
+      mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
     });
   })
 });
@@ -153,35 +129,7 @@ router.post('/load/hot', (req, res) => {
         "totalCount": 1
       }}
     ]).sort({"totalCount": -1}).then((dilemmas) => {
-      if(user) {
-        //use more loops than needed but as a result only return votes for loaded dilemmas and map them to co-relate with dilemmas index wise( better scalability and faster response overall)
-        dilemmas.forEach((dilemma) => {
-          dilemmaIds.push(dilemma._id);//array with ids of each dilemma
-        });
-        Vote.find({
-          'userId': req.cookies['id'],
-          'dilemmaId': {$in: dilemmaIds} //get all the votes on loaded dilemmas for the user
-        }, (err, votes) => {
-          if (err) throw err;
-          dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
-            votes.forEach((vote) => {
-              if (vote.dilemmaId.toString() === dilemma._id.toString()) {
-                votesArray.push(vote);
-              }
-            });
-            if (!votesArray[index]) {
-              votesArray.push({"voteIndex": -1});
-            }
-          });
-          res.send({dilemmas, votes: votesArray});
-        })
-      }
-      else {
-        dilemmas.forEach(() => { //since guest is not logged in map each vote with index -1
-            votesArray.push({"voteIndex": -1});
-        });
-        res.send({dilemmas, votes: votesArray});
-      }
+      mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
     });
 
   })
@@ -195,36 +143,11 @@ router.post('/load/mine', (req, res) => {
     '_id': req.cookies['id']
   }, (err, user) => {
     if(err) throw err;
-    if(user) {
-      Dilemma.find({
-        'author': user.username}, (err, dilemmas) => {
-        if(err) throw err;
-        //use more loops than needed but as a result only return votes for loaded dilemmas and map them to co-relate with dilemmas index wise( better scalability and faster response overall)
-        dilemmas.forEach((dilemma) => {
-          dilemmaIds.push(dilemma._id);//array with ids of each dilemma
-        });
-        Vote.find({
-          'userId': req.cookies['id'],
-          'dilemmaId': {$in: dilemmaIds} //get all the votes on loaded dilemmas for the user
-        }, (err,votes) => {
-          if(err) throw err;
-          dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
-            votes.forEach((vote) => {
-              if(vote.dilemmaId.toString() === dilemma._id.toString()) {
-                votesArray.push(vote);
-              }
-            });
-            if(!votesArray[index]) {
-              votesArray.push({"voteIndex": -1});
-            }
-          });
-          res.send({dilemmas, votes: votesArray});
-        })
-      });
-    }
-    else {
-      res.json({result: 'User not found'});
-    }
+    Dilemma.find({
+      'author': user.username}, (err, dilemmas) => {
+      if(err) throw err;
+      mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
+    });
   })
 });
 

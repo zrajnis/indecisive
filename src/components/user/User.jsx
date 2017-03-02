@@ -12,7 +12,7 @@ class User extends React.Component {
   componentDidMount() {
     let tabName = window.location.href.split('/');
     tabName = tabName[tabName.length -1];
-    if(tabName) {
+    if(tabName !== 'user') {
       this.props.dispatch(loadDilemmas(tabName));
     }
     else {
