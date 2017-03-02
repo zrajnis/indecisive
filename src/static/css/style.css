@@ -16,7 +16,7 @@ h1{
 #container{
   width: 1000px;
   margin:auto;
-  height:1200px;
+  min-height:1200px;
   background: #233237;
 }
 

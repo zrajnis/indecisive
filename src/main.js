@@ -2,7 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware, compose} from 'redux';
-import {Router, Route, browserHistory} from 'react-router';
+import {Router, Route, browserHistory, IndexRoute} from 'react-router';
 import thunk from 'redux-thunk';
 import App from './reducers/App';
 import Guest from './components/guest/Guest.jsx';
@@ -18,12 +18,15 @@ render(
   <Provider store={store}>
     <Router history={browserHistory}>
       <Route path="/" component={Guest}>
-        <Route path="test" component={User}/>
-        <Route path="test2" component={Guest}/>
+        <IndexRoute component={Guest} />
+        <Route path="hot" component={Guest}/>
+        <Route path="newest" component={Guest}/>
       </Route>
-      <Route path="/user" component={User}>
-        <Route path="test" component={User}/>
-        <Route path="test2" component={Guest}/>
+      <Route path="/user" >
+        <IndexRoute component={User} />
+        <Route path="hot" component={User}/>
+        <Route path="newest" component={User}/>
+        <Route path="mine" component={User}/>
       </Route>
     </Router>
   </Provider>,

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-router.get('/', (req, res) => {
+router.get(['/', '/home', '/hot', '/newest'], (req, res) => {
   res.render('index', { name: 'Indecisive' });
 });
 

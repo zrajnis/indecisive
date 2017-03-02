@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from '../Modal.jsx';
 import Settings from './Settings.jsx';
 import CreateDilemmaForm from './CreateDilemmaForm.jsx';
+import {Link} from 'react-router';
 
 class NavBar extends React.Component {
   constructor(props) {
@@ -45,10 +46,10 @@ class NavBar extends React.Component {
       <div id="navBarContainer">
         <nav id="navBar">
           <ul id="navBarList">
-            <li><a className="active" href="/user">Home</a></li>
-            <li><a href="/user/hot">Hot</a></li>
-            <li><a href="/user/newest">Newest</a></li>
-            <li><a href="/user/mine">Mine</a></li>
+            <li><Link to="/user" onClick={() => this.props.load('home')}>Home</Link></li>
+            <li><Link to="/user/hot" onClick={() => this.props.load('hot')}>Hot</Link></li>
+            <li><Link to="/user/newest" onClick={() => this.props.load('newest')}>Newest</Link></li>
+            <li><Link to="/user/mine" onClick={() => this.props.load('mine')}>Mine</Link></li>
           </ul>
           <div id="searchFormContainer">
             <form id="searchForm" href="#search">
