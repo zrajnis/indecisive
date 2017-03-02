@@ -10,9 +10,14 @@ class Guest extends React.Component {
   }
 
   componentDidMount() {
-    let tabName =  window.location.href.split('/');
+    let tabName = window.location.href.split('/');
     tabName = tabName[tabName.length -1];
-    this.props.dispatch(loadDilemmas(tabName));
+    if(tabName) {
+
+    }
+    else {
+      this.props.dispatch(loadDilemmas('home'));
+    }
   }
 
   load(tabName) {

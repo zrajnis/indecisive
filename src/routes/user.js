@@ -9,14 +9,14 @@ router.use((req, res, next) => {
   //check header or url parameters or post parameters for token
   const token = req.cookies['token'];
   //decode token
-  if(token){
+  if(token) {
     //verifies secret and checks exp
     jwt.verify(token, req.app.get('superSecret'), (err, decoded) => {
       if(err) {
         res.clearCookie('token');//remove the token
         return res.json({success: false, message: 'Failed to authenticate token.'});
       }
-      else{
+      else {
         //if everything is good,save to request for use in other routers
         req.decoded = decoded;
         next();
@@ -55,7 +55,6 @@ router.post('/settings/changeEmail', (req, res) => {
           else {
             res.json({result: 'Something unexpected happened'})
           }
-
         });
     }
   });
@@ -67,7 +66,7 @@ router.post('/settings/changePassword', (req, res) => {
   User.findOneAndUpdate({
       '_id':req.cookies['id']
     },{$set: {'password': data}},
-    {safe: true, upsert: false}, (err, user) =>{
+    {safe: true, upsert: false}, (err, user) => {
       if(err) throw err;
       if(user) {
         res.json({result: 'Success'});
