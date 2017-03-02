@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Vote = require('../models/Vote');
 const Dilemma = require('../models/Dilemma');
-
+//todo: redo vote and dilemma routes so non registered users can vote and that it loads dilemmas for them
 //middleware to verify the token
 router.use((req, res, next) => {
   //check header or url parameters or post parameters for token
@@ -28,8 +28,8 @@ router.use((req, res, next) => {
   }
 });
 
-router.get('/*', (req, res) => {
-  res.render('index', {name: 'Indecisive'});
+router.get(['/', '/home', '/hot', '/newest', '/mine'], (req, res) => {
+  res.render('index', { name: 'Indecisive' });
 });
 
 router.post('/settings/changeEmail', (req, res) => {

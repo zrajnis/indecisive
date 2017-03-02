@@ -10,7 +10,9 @@ class User extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(loadDilemmas('home'));
+    let tabName =  window.location.href.split('/');
+    tabName = tabName[tabName.length -1];
+    this.props.dispatch(loadDilemmas(tabName));
   }
 
   load(tabName) {
