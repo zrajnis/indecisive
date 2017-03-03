@@ -9,13 +9,13 @@ router.post('/new', (req, res) => {
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
-    if(dilemma) {
+    if(dilemma && req.cookies['id']) {
       Vote.findOne({
         'userId': req.cookies['id'],
         'dilemmaId': dilemma._id
       }, (err, vote) => {
         if(err) throw err;
-        if(!vote) {
+        if(!vote) { //user voted
           dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
             return index === answerIndex ? ++answerVote : answerVote;
           });
@@ -36,6 +36,18 @@ router.post('/new', (req, res) => {
         }
       });
     }
+    else if(dilemma) { //guest voted
+      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+        return index === answerIndex ? ++answerVote : answerVote;
+      });
+      dilemma.save();
+      const vote = {
+        'voteIndex': answerIndex,
+        'dilemmaId': dilemmaId
+      };
+      
+      res.send({dilemma, vote});
+    }
     else {
       res.json({result: 'error: Dilemma not found'});
     }
@@ -50,7 +62,7 @@ router.post('/change', (req, res) => {
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
-    if(dilemma) {
+    if(dilemma && req.cookies['id']) {
       Vote.findOne({
         'userId': req.cookies['id'],
         'dilemmaId': dilemma._id,
@@ -74,6 +86,24 @@ router.post('/change', (req, res) => {
         }
       })
     }
+    else if(dilemma) {
+      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+        if(index === oldAnswerIndex) {
+          answerVote--;
+        }
+        else if(index === newAnswerIndex) {
+          answerVote++;
+        }
+        return answerVote;
+      });
+      dilemma.save();
+      const vote = {
+        'voteIndex': newAnswerIndex,
+        'dilemmaId': dilemmaId
+      };
+
+      res.send({dilemma, vote});
+    }
     else {
       res.json({result: 'error: Dilemma not found'});
     }
@@ -87,7 +117,7 @@ router.post('/remove', (req, res) => {
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
     if(err) throw err;
-    if(dilemma) {
+    if(dilemma && req.cookies['id']) {
       Vote.findOne({
         'userId': req.cookies['id'],
         'dilemmaId': dilemma._id,
@@ -103,6 +133,13 @@ router.post('/remove', (req, res) => {
           res.send({dilemma});
         }
       })
+    }
+    else if(dilemma) {
+      dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
+        return index === answerIndex ? --answerVote: answerVote;
+      });
+      dilemma.save();
+      res.send({dilemma});
     }
     else {
       res.json({result: 'error: Dilemma not found'});
