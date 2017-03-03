@@ -65,7 +65,7 @@ class NavBar extends React.Component {
         </nav>
 
         <Modal className="modal" backdropClassName="backdrop" id="settingsModal" isOpen={this.state.isSettingsModalOpen}
-               onClose={() => this.closeSettingsModal()}>
+          onClose={() => this.closeSettingsModal()}>
           <button className="cancelBtn" onClick={() => this.closeSettingsModal()}>x</button>
           <div id="settingsModalContainer">
             <h1 id="settingsTitle">Settings</h1>
@@ -76,7 +76,7 @@ class NavBar extends React.Component {
         </Modal>
 
         <Modal className="createDilemmaModal" backdropClassName="backdrop" id="createModal"
-               isOpen={this.state.isCreateDilemmaModalOpen} onClose={() => this.closeCreateDilemmaModal()}>
+          isOpen={this.state.isCreateDilemmaModalOpen} onClose={() => this.closeCreateDilemmaModal()}>
           <button className="cancelBtn" onClick={() => this.closeCreateDilemmaModal()}>x</button>
           <div id="createDilemmaModalContainer">
             <h1 id="createDilemmaTitle">Create a dilemma</h1>

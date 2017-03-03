@@ -31,11 +31,11 @@ class Guest extends React.Component {
         {this.props.dilemmas ?
           this.props.dilemmas.map((dilemma, index) =>
             <Dilemma dilemma={dilemma} key={index} dilemmaNumber={index}
-                     voteIndex={this.props.votes[index].voteIndex}
-                     addNewVote={(index, id) => this.props.dispatch(addNewVote(index, id))}
-                     changeVote={(oldIndex, newIndex, id) => this.props.dispatch(changeVote(oldIndex, newIndex, id))}
-                     removeVote={(index, id) => this.props.dispatch(removeVote(index, id))}
-                     removeDilemmaError={(id) => this.props.dispatch(removeDilemmaError(id))}/>)
+               voteIndex={this.props.votes[index].voteIndex}
+               addNewVote={(index, id) => this.props.dispatch(addNewVote(index, id))}
+               changeVote={(oldIndex, newIndex, id) => this.props.dispatch(changeVote(oldIndex, newIndex, id))}
+               removeVote={(index, id) => this.props.dispatch(removeVote(index, id))}
+               removeDilemmaError={(id) => this.props.dispatch(removeDilemmaError(id))}/>)
           :
           <div className="errorMsg">{this.props.error} </div>
         }
@@ -51,7 +51,7 @@ const mapStateToProps = (state) => {
       votes: state.Dilemmas.votes ? state.Dilemmas.votes : []
     };
   }
-  else if(state.Dilemmas !== null && state.Dilemmas.error){
+  else if(state.Dilemmas !== null && state.Dilemmas.error) {
     return {
       error: state.Dilemmas.error
     };

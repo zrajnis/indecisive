@@ -30,7 +30,7 @@ const answerField = ({input, type, clicked, meta: {touched, error}}) => (
 );
 
 class CreateDilemmaForm extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       wasClicked: false
@@ -44,13 +44,13 @@ class CreateDilemmaForm extends React.Component {
     this.props.dispatch(resetAnswersArray());
   }
 
-  clicked(){
-    this.setState({wasClicked: true})
+  clicked() {
+    this.setState({wasClicked: true});
   }
 
   removeAnswerFromArray(index) {
     this.props.answersArray.splice(index,1);
-    if(this.props.answersArray.length === 4){
+    if(this.props.answersArray.length === 4) {
       document.getElementById('addAnswersBtn').disabled = false;
     }
     this.forceUpdate();
