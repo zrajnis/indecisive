@@ -59,7 +59,7 @@ export function validateCreateDilemma(formProps) {
   }
 
   if(!descriptionRegex.test(formProps.description)) {
-    errors.description = 'Description is too long'
+    errors.description = 'Description is too long';
   }
 
   if(formProps.answer && !answerRegex.test(formProps.answer)) {

@@ -8,13 +8,17 @@ router.post('/new', (req, res) => {
 
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
-    if(err) throw err;
+    if(err) {
+      throw err;
+    }
     if(dilemma && req.cookies['id']) {
       Vote.findOne({
         'userId': req.cookies['id'],
         'dilemmaId': dilemma._id
       }, (err, vote) => {
-        if(err) throw err;
+        if(err) {
+          throw err;
+        }
         if(!vote) { //user voted
           dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
             return index === answerIndex ? ++answerVote : answerVote;
@@ -27,7 +31,9 @@ router.post('/new', (req, res) => {
           });
 
           newVoteModel.save((err) => {
-            if(err) throw err;
+            if(err) {
+              throw err;
+            }
           });
           res.send({dilemma, vote: newVoteModel});
         }
@@ -61,14 +67,18 @@ router.post('/change', (req, res) => {
 
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
-    if(err) throw err;
+    if(err) {
+      throw err;
+    }
     if(dilemma && req.cookies['id']) {
       Vote.findOne({
         'userId': req.cookies['id'],
         'dilemmaId': dilemma._id,
         'voteIndex': oldAnswerIndex
       }, (err, vote) => {
-        if(err) throw err;
+        if(err) {
+          throw err;
+        }
         if(vote) {
           dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
             if(index === oldAnswerIndex) {
@@ -84,7 +94,7 @@ router.post('/change', (req, res) => {
           vote.save();
           res.send({dilemma, vote});
         }
-      })
+      });
     }
     else if(dilemma) {
       dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
@@ -116,14 +126,18 @@ router.post('/remove', (req, res) => {
 
   Dilemma.findOne({
     '_id': dilemmaId}, (err, dilemma) => {
-    if(err) throw err;
+    if(err) {
+      throw err;
+    }
     if(dilemma && req.cookies['id']) {
       Vote.findOne({
         'userId': req.cookies['id'],
         'dilemmaId': dilemma._id,
         'voteIndex': answerIndex
       }, (err, vote) => {
-        if(err) throw err;
+        if(err) {
+          throw err;
+        }
         if(vote) {
           vote.remove();
           dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {
@@ -132,7 +146,7 @@ router.post('/remove', (req, res) => {
           dilemma.save();
           res.send({dilemma});
         }
-      })
+      });
     }
     else if(dilemma) {
       dilemma.answerVotes = dilemma.answerVotes.map((answerVote, index) => {

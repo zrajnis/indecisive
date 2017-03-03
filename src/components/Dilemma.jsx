@@ -14,7 +14,6 @@ class Dilemma extends React.Component {
     this.props.removeDilemmaError(this.props.dilemma._id);
     if(this.props.voteIndex === index) { //if user is  removing existing answer
       this.props.removeVote(index, this.props.dilemma._id);
-      //this.state.answerVoted = -1;
     }
     else {
       if(this.props.voteIndex === -1) { //if answer wasnt already upvoted and no other answer was selected add new one
@@ -22,8 +21,7 @@ class Dilemma extends React.Component {
       }
       else {  //otherwise change the vote from one answer to another
         this.props.changeVote(this.props.voteIndex, index, this.props.dilemma._id);
-      }
-      //this.state.answerVoted = index;
+      };
     }
   }
 
@@ -44,10 +42,10 @@ class Dilemma extends React.Component {
         <div className="dilemmaAnswerContainer">
           {this.props.dilemma.answers.map((answer, i) =>
             <div key={i} className="dilemmaRadioWrapper">
-              <input type="radio" name={"upvoteDilemma" + this.props.dilemmaNumber} className="upvoteRadio" 
-                     id={"Dilemma" + this.props.dilemmaNumber + "RadioBtn" + i} checked={(this.props.dilemma.error || i !== this.props.voteIndex) ? false : true}/>
-              <span className={this.props.dilemma.error ? "radioImg unclickable" : "radioImg"} onClick={() => this.voteAction(i)}/>
-              <label htmlFor={"radioBtn" + i}>
+              <input type="radio" name={'upvoteDilemma' + this.props.dilemmaNumber} className="upvoteRadio" 
+                id={'Dilemma' + this.props.dilemmaNumber + 'RadioBtn' + i} checked={(this.props.dilemma.error || i !== this.props.voteIndex) ? false : true}/>
+              <span className={this.props.dilemma.error ? 'radioImg unclickable' : 'radioImg'} onClick={() => this.voteAction(i)}/>
+              <label htmlFor={'radioBtn' + i}>
                 <span  className="radioText">{answer}</span>
               </label>
               {this.state.isDisplayingVoteResults ?
@@ -57,7 +55,7 @@ class Dilemma extends React.Component {
           )}
         </div>
         <div className="toggleVotesBtnContainer">
-          <button className="toggleVotesBtn" onClick={() =>{this.toggleVoteDisplay()}}>
+          <button className="toggleVotesBtn" onClick={() =>{this.toggleVoteDisplay();}}>
             {this.state.isDisplayingVoteResults ? 'Hide votes' : 'Show votes'}</button>
         </div>
         <div className="errorMsg">{this.props.dilemma.error ? this.props.dilemma.error : ''}</div>

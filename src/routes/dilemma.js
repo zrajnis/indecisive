@@ -13,23 +13,25 @@ function mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res) {
       'userId': req.cookies['id'],
       'dilemmaId': {$in: dilemmaIds} //get all the votes on loaded dilemmas for the user
     }, (err, votes) => {
-      if (err) throw err;
+      if(err) {
+        throw err;
+      }
       dilemmas.forEach((dilemma, index) => { //map votes so that each index of vote in array is the vote of the dilemma with same index in dilemmas array
         votes.forEach((vote) => {
-          if (vote.dilemmaId.toString() === dilemma._id.toString()) {
+          if(vote.dilemmaId.toString() === dilemma._id.toString()) {
             votesArray.push(vote);
           }
         });
-        if (!votesArray[index]) {
-          votesArray.push({"voteIndex": -1});
+        if(!votesArray[index]) {
+          votesArray.push({'voteIndex': -1});
         }
       });
       res.send({dilemmas, votes: votesArray});
-    })
+    });
   }
   else { //guest
     dilemmas.forEach((dilemma) => { //since guest is not logged in map each vote with index -1
-      votesArray.push({"voteIndex": -1, 'dilemmaId': dilemma._id});
+      votesArray.push({'voteIndex': -1, 'dilemmaId': dilemma._id});
     });
     res.send({dilemmas, votes: votesArray});
   }
@@ -46,7 +48,9 @@ router.post('/create', (req, res) => {
   User.findOne({
     '_id': req.cookies['id']
   }, (err, user) => {
-    if (err) throw err;
+    if (err) {
+      throw err;
+    }
     if (user) {
       const newDilemmaModel = new Dilemma({
         title: newDilemma.title,
@@ -58,7 +62,9 @@ router.post('/create', (req, res) => {
       });
 
       newDilemmaModel.save((err) => {
-        if (err) throw err;
+        if(err) {
+          throw err;
+        }
       });
       res.json({result: 'Dilemma created'});
     }
@@ -75,12 +81,16 @@ router.post('/load/home', (req, res) => {
   User.findOne({
     '_id': req.cookies['id']
   }, (err, user) => {
-    if(err) throw err;
+    if(err) {
+      throw err;
+    }
     Dilemma.find({}, (err, dilemmas) => {
-      if(err) throw err;
+      if(err) {
+        throw err;
+      }
       mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
     });
-  })
+  });
 });
 
 router.post('/load/newest', (req, res) => {
@@ -90,11 +100,13 @@ router.post('/load/newest', (req, res) => {
   User.findOne({
     '_id': req.cookies['id']
   }, (err, user) => {
-    if(err) throw err;
+    if(err) {
+      throw err;
+    }
     Dilemma.find().sort({timestamp : -1}).then((dilemmas) => {
       mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
     });
-  })
+  });
 });
 
 router.post('/load/hot', (req, res) => {
@@ -104,35 +116,40 @@ router.post('/load/hot', (req, res) => {
   User.findOne({
     '_id': req.cookies['id']
   }, (err, user) => {
-    if(err) throw err;
+    if(err) {
+      throw err;
+    }
     Dilemma.aggregate([
-      { "$unwind" : "$answerVotes" },
-      { "$group" : {
-        "_id" : "$_id",
-        "title": {"$first": "$title"},
-        "answers": {"$first": "$answers"},
-        "totalCount": {
-          "$sum": "$answerVotes"
-        },
-        "answerVotes": {
-          "$push" : "$answerVotes"
-        },
-        "timestamp": {"$first": "$timestamp"},
-        "author": {"$first": "$author"}
-      }},
-      { "$project": {
-        "title": 1,
-        "answers": 1,
-        "answerVotes": 1,
-        "timestamp": 1,
-        "author": 1,
-        "totalCount": 1
-      }}
-    ]).sort({"totalCount": -1}).then((dilemmas) => {
+      {'$unwind': '$answerVotes'},
+      {
+        '$group': {
+          '_id': '$_id',
+          'title': {'$first': '$title'},
+          'answers': {'$first': '$answers'},
+          'totalCount': {
+            '$sum': '$answerVotes'
+          },
+          'answerVotes': {
+            '$push' : '$answerVotes'
+          },
+          'timestamp': {'$first': '$timestamp'},
+          'author': {'$first': '$author'}
+        }
+      },
+      {
+        '$project': {
+          'title': 1,
+          'answers': 1,
+          'answerVotes': 1,
+          'timestamp': 1,
+          'author': 1,
+          'totalCount': 1
+        }
+      }
+    ]).sort({'totalCount': -1}).then((dilemmas) => {
       mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
     });
-
-  })
+  });
 });
 
 router.post('/load/mine', (req, res) => {
@@ -142,13 +159,17 @@ router.post('/load/mine', (req, res) => {
   User.findOne({
     '_id': req.cookies['id']
   }, (err, user) => {
-    if(err) throw err;
+    if(err) {
+      throw err;
+    }
     Dilemma.find({
       'author': user.username}, (err, dilemmas) => {
-      if(err) throw err;
+      if(err) {
+        throw err;
+      }
       mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
     });
-  })
+  });
 });
 
 module.exports = router;

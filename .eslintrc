@@ -11,10 +11,13 @@
     "templateStrings": true
   },
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "globals": {
-
+    "React": true
   },
   "plugins": [
     "react"
@@ -26,9 +29,11 @@
     "eol-last": 1,
     "space-before-blocks": [1, "always"],
     "semi": [1, "always"],
-    "indent": [1, 2, {"SwitchCase": 1 }],
+    "indent": [1, 2, {"SwitchCase": 1}],
     "curly": 1,
     "comma-dangle": ["error", "never"],
-    "arrow-parens": 0
+    "arrow-parens": 0,
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error"
   }
 }

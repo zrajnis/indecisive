@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Vote = require('../models/Vote');
 const Dilemma = require('../models/Dilemma');
-//todo: redo vote and dilemma routes so non registered users can vote and that it loads dilemmas for them
+
 //middleware to verify the token
 router.use((req, res, next) => {
   //check header or url parameters or post parameters for token
@@ -38,22 +38,25 @@ router.post('/settings/changeEmail', (req, res) => {
   User.findOne({
     'email': data.toLowerCase()
   }, (err, user) => {
-    if(err) throw err;
+    if(err) {
+      throw err;
+    }
     if(user) {
-      console.log('Email is already in use');
       res.json({result: 'Email is already in use'});
     }
     else {
       User.findOneAndUpdate({
-          '_id':req.cookies['id']
-        },{$set: {'email': data.toLowerCase()}},
+        '_id':req.cookies['id']
+      },{$set: {'email': data.toLowerCase()}},
         {safe: true, upsert: false}, (err, user) => {
-          if(err) throw err;
+          if(err) {
+            throw err;
+          }
           if(user) {
             res.json({result: 'Success'});
           }
           else {
-            res.json({result: 'Something unexpected happened'})
+            res.json({result: 'Something unexpected happened'});
           }
         });
     }
@@ -64,15 +67,17 @@ router.post('/settings/changePassword', (req, res) => {
   const data = req.body.value;
 
   User.findOneAndUpdate({
-      '_id':req.cookies['id']
-    },{$set: {'password': data}},
+    '_id':req.cookies['id']
+  },{$set: {'password': data}},
     {safe: true, upsert: false}, (err, user) => {
-      if(err) throw err;
+      if(err) {
+        throw err;
+      }
       if(user) {
         res.json({result: 'Success'});
       }
       else {
-        res.json({result: 'Something unexpected happened'})
+        res.json({result: 'Something unexpected happened'});
       }
     });
 });
@@ -81,18 +86,18 @@ router.delete('/settings', (req, res) => {
   User.findOneAndRemove({
     '_id': req.cookies['id']
   }, (err, user) => {
-    if(err) throw err;
+    if(err) {
+      throw err;
+    }
     if(user) {
-      console.log('user found and deleted');
       res.clearCookie('token');
       res.clearCookie('id');
       res.json({result: 'Success'});
     }
     else {
-      res.json({result: 'User not found'})
+      res.json({result: 'User not found'});
     }
-
-  })
+  });
 });
 
 router.post('/logout', (req, res) => {
