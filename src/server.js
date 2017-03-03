@@ -32,15 +32,11 @@ app.use(cookieParser());
 
 //set routes
 app.use('/', indexRoutes);
+app.use('/vote', voteRoutes);
 app.use('/user', userRoutes);
-app.use('/user/vote', voteRoutes);
 app.use('/dilemma', dilemmaRoutes);
 
 app.use(express.static(path.join(__dirname, 'static')));
-
-app.get('/user/test', (req, res) => {
-  res.render('index', { name: 'Indecisive' });
-});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

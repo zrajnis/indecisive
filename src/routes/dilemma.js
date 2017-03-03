@@ -28,8 +28,8 @@ function mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res) {
     })
   }
   else { //guest
-    dilemmas.forEach(() => { //since guest is not logged in map each vote with index -1
-      votesArray.push({"voteIndex": -1});
+    dilemmas.forEach((dilemma) => { //since guest is not logged in map each vote with index -1
+      votesArray.push({"voteIndex": -1, 'dilemmaId': dilemma._id});
     });
     res.send({dilemmas, votes: votesArray});
   }
