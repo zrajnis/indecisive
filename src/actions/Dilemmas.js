@@ -155,8 +155,10 @@ export function searchDilemma() {
     }).then((response) => {
       title.value = '';
       response.json().then((data) => {
+        if(data.result) { // result is "Dilemma not found"
+          dispatch(searchDilemmaFailure(data.result));
+        }
         dispatch(searchDilemmaSuccess(data));
-        return false;
       });
     }).catch( (err) => {
       dispatch(searchDilemmaFailure(err));

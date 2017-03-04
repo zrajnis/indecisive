@@ -48,11 +48,15 @@ export default function(state = null, action) {
       });
       break;
     case LOAD_DATA_FAILURE:
+    case SEARCH_DILEMMA_FAILURE:
+      return Object.assign({}, state, {
+        error: action.error
+      });
+      break;
     case ADD_NEW_VOTE_FAILURE:
     case CHANGE_VOTE_FAILURE:
     case REMOVE_VOTE_FAILURE:
     case REMOVE_DILEMMA_ERROR:
-    case SEARCH_DILEMMA_FAILURE:
       return Object.assign({}, state, {
         data: state.data.map((dilemma) => {
           if(dilemma._id === action.dilemmaId) {

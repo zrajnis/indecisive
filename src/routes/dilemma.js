@@ -190,7 +190,12 @@ router.post('/search', (req, res) => {
       if(err) {
         throw err;
       }
-      mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
+      if(dilemmas.length > 0) { //dilemmas is an array and empty array is truthy so we need to check length
+        mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
+      }
+      else {
+        res.json({result: 'Dilemma not found'})
+      }
     });
   });
 });
