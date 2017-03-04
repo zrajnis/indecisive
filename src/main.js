@@ -21,12 +21,14 @@ render(
         <IndexRoute component={Guest} />
         <Route path="hot" component={Guest}/>
         <Route path="newest" component={Guest}/>
+        <Route path="search" component={Guest}/>
       </Route>
       <Route path="/user" >
         <IndexRoute component={User} />
         <Route path="hot" component={User}/>
         <Route path="newest" component={User}/>
         <Route path="mine" component={User}/>
+        <Route path="search" component={User}/>
       </Route>
     </Router>
   </Provider>,

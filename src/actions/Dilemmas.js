@@ -7,6 +7,8 @@ export const CHANGE_VOTE_FAILURE = 'CHANGE_VOTE_FAILURE';
 export const REMOVE_VOTE_SUCCESS = 'REMOVE_VOTE_SUCCESS';
 export const REMOVE_VOTE_FAILURE = 'REMOVE_VOTE_FAILURE';
 export const REMOVE_DILEMMA_ERROR = 'REMOVE_DILEMMA_ERROR';
+export const SEARCH_DILEMMA_SUCCESS = 'SEARCH_DILEMMA_SUCCESS';
+export const SEARCH_DILEMMA_FAILURE = 'SEARCH_DILEMMA_FAILURE';
 
 export function loadDilemmas(tabName) {
   return (dispatch) => {
@@ -27,11 +29,11 @@ export function loadDilemmas(tabName) {
 }
 
 function loadDataSuccess(data) {
-  return { type: LOAD_DATA_SUCCESS, dilemmas: data.dilemmas, votes: data.votes};
+  return {type: LOAD_DATA_SUCCESS, dilemmas: data.dilemmas, votes: data.votes};
 }
 
 function loadDilemmasFailure(error) {
-  return { type: LOAD_DATA_FAILURE, error: error};
+  return {type: LOAD_DATA_FAILURE, error: error};
 }
 
 export function addNewVote(answerIndex, dilemmaId) { //its a bit redundant since you can just make function "vote" and pass url depending whether its adding new one,removing existing or changing a vote
@@ -136,4 +138,36 @@ function removeVoteFailure(error, dilemmaId) {
 
 export function removeDilemmaError(dilemmaId) {
   return {type: REMOVE_DILEMMA_ERROR, error: '', dilemmaId: dilemmaId};
+}
+
+export function searchDilemma() {
+  const title = document.getElementById('searchBar');
+  return (dispatch) => {
+    fetch('/dilemma/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: title.value
+      }),
+      credentials: 'same-origin'
+    }).then((response) => {
+      title.value = '';
+      response.json().then((data) => {
+        dispatch(searchDilemmaSuccess(data));
+        return false;
+      });
+    }).catch( (err) => {
+      dispatch(searchDilemmaFailure(err));
+    });
+  };
+}
+
+function searchDilemmaSuccess(data) {
+  return {type: SEARCH_DILEMMA_SUCCESS, dilemmas: data.dilemmas, votes: data.votes};
+}
+
+function searchDilemmaFailure(error) {
+  return {type: SEARCH_DILEMMA_FAILURE, error: error};
 }

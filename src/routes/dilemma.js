@@ -172,4 +172,27 @@ router.post('/load/mine', (req, res) => {
   });
 });
 
+
+router.post('/search', (req, res) => {
+  const dilemmaIds = [];
+  const votesArray = [];
+  const title = req.body.title;
+
+  User.findOne({
+    '_id': req.cookies['id']
+  }, (err, user) => {
+    if(err) {
+      throw err;
+    }
+    Dilemma.find({
+      'title': title
+    }, (err, dilemmas) => {
+      if(err) {
+        throw err;
+      }
+      mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
+    });
+  });
+});
+
 module.exports = router;

@@ -43,13 +43,11 @@ class NavBar extends React.Component {
             <li><Link to="/hot" onClick={() => this.props.load('hot')}>Hot</Link></li>
             <li><Link to="/newest" onClick={() => this.props.load('newest')}>Newest</Link></li>
           </ul>
-          <div id="searchFormContainer">
-            <form id="searchForm" href="#search">
-              <label  htmlFor="#searchBar" className="hidden">Search a dilemma</label>
-              <input type="search" placeholder="Search a dilemma" id="searchBar"/>
-              <button type="submit" id="searchBtn">
-              </button>
-            </form>
+          <div id="navBarBtnContainer">
+            <label  htmlFor="#searchBar" className="hidden">Search a dilemma</label>
+            <input type="search" placeholder="Search a dilemma" id="searchBar"/>
+            <Link to="/search"><button type="button" id="searchBtn" onClick={() => this.props.search()}>
+            </button></Link>
             <button type="button" className="navBarBtn" id="login" onClick={() => this.openLoginModal()}>Log in</button>
             <button type="button" className="navBarBtn" id="signup" onClick={() => this.openSignupModal()}>Sign up</button>
           </div>
