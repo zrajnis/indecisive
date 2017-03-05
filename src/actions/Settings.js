@@ -1,6 +1,7 @@
 export const SETTINGS_CHANGE_EMAIL_SUCCESS = 'SETTINGS_CHANGE_EMAIL_SUCCESS';
+export const SETTINGS_CHANGE_EMAIL_FAILURE = 'SETTINGS_CHANGE_EMAIL_FAILURE';
 export const SETTINGS_CHANGE_PASSWORD_SUCCESS = 'SETTINGS_CHANGE_PASSWORD_SUCCESS';
-export const SETTINGS_EMAIL_SERVER_RESPONSE = 'SETTINGS_EMAIL_SERVER_RESPONSE';
+export const SETTINGS_CHANGE_PASSWORD_FAILURE = 'SETTINGS_CHANGE_PASSWORD_FAILURE';
 export const SETTINGS_CLEAR_ERROR_MSG = 'SETTINGS_CLEAR_ERROR_MSG';
 export const SETTINGS_FAILED_EMAIL_VALIDATION = 'SETTINGS_FAILED_EMAIL_VALIDATION';
 export const SETTINGS_FAILED_PASSWORD_VALIDATION = 'SETTINGS_FAILED_PASSWORD_VALIDATION';
@@ -9,7 +10,7 @@ export const SETTINGS_DEACTIVATE_ACCOUNT_FAILURE = 'SETTINGS_DEACTIVATE_ACCOUNT_
 
 export function changeEmail(newEmail) {
   return (dispatch) => {
-    fetch('/user/settings/changeEmail', {
+    fetch('/user/settings/email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -20,20 +21,16 @@ export function changeEmail(newEmail) {
       credentials: 'same-origin'
     }).then((response) => {
       response.json().then((data) => {
-        switch(data.result) {
-          case 'Success':
-            newEmail.value = '';
-            dispatch(changeEmailSuccess(data.result));
-            setTimeout(() => {
-              dispatch(clearErrorMsg());
-            }, 1500);
-            break;
-          case 'Email is already in use':
-            dispatch(serverEmailResponse(data.result));
-            break;
-          default:
-            break;
+        if(data.result === 'Success') {
+          newEmail.value = '';
+          dispatch(changeEmailSuccess(data.result));
         }
+        else {
+          dispatch(changeEmailFailure(data.result));
+        }
+        setTimeout(() => {
+          dispatch(clearErrorMsg());
+        }, 1500);
       });
     });
   };
@@ -43,9 +40,13 @@ function changeEmailSuccess(msg) {
   return {type: SETTINGS_CHANGE_EMAIL_SUCCESS, successEmailMsg: msg};
 }
 
+function changeEmailFailure(msg) {
+  return {type: SETTINGS_CHANGE_EMAIL_FAILURE, emailError: msg};
+}
+
 export function changePassword(newPassword) {
   return (dispatch) => {
-    fetch('/user/settings/changePassword', {
+    fetch('/user/settings/password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -59,10 +60,13 @@ export function changePassword(newPassword) {
         if(data.result === 'Success') {
           newPassword.value = '';
           dispatch(changePasswordSuccess(data.result));
-          setTimeout(() => {
-            dispatch(clearErrorMsg());
-          }, 1500);
         }
+        else {
+          dispatch(changePasswordFailure(data.result));
+        }
+        setTimeout(() => {
+          dispatch(clearErrorMsg());
+        }, 1500);
       });
     });
   };
@@ -70,6 +74,10 @@ export function changePassword(newPassword) {
 
 function changePasswordSuccess(msg) {
   return {type: SETTINGS_CHANGE_PASSWORD_SUCCESS, successPasswordMsg: msg};
+}
+
+function changePasswordFailure(response) {
+  return {type: SETTINGS_CHANGE_PASSWORD_FAILURE, passwordError: response};
 }
 
 export function deactivateAccount() {
@@ -101,10 +109,6 @@ function deactivateAccountSuccess() {
 
 function deactivateAccountFailure(error) {
   return {type: SETTINGS_DEACTIVATE_ACCOUNT_FAILURE, deactivateError: error};
-}
-
-export function serverEmailResponse(response) {
-  return {type: SETTINGS_EMAIL_SERVER_RESPONSE, emailError: response};
 }
 
 export function failedEmailValidation(response) {
