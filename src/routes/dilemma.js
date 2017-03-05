@@ -162,13 +162,18 @@ router.post('/load/mine', (req, res) => {
     if(err) {
       throw err;
     }
-    Dilemma.find({
-      'author': user.username}, (err, dilemmas) => {
-      if(err) {
-        throw err;
-      }
-      mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
-    });
+    if(user) {
+      Dilemma.find({
+        'author': user.username}, (err, dilemmas) => {
+        if(err) {
+          throw err;
+        }
+        mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
+      });
+    }
+    else { //only scenario where this can happen is if users id cookie was manually erased,so we remove token too
+      res.clearCookie('token');
+    }
   });
 });
 
@@ -194,7 +199,7 @@ router.post('/search', (req, res) => {
         mapDilemmasAndVotes(dilemmas, user, dilemmaIds, votesArray, req, res);
       }
       else {
-        res.json({result: 'Dilemma not found'})
+        res.json({result: 'Dilemma not found'});
       }
     });
   });

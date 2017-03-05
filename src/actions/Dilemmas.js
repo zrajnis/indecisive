@@ -142,6 +142,7 @@ export function removeDilemmaError(dilemmaId) {
 
 export function searchDilemma() {
   const title = document.getElementById('searchBar');
+  
   return (dispatch) => {
     fetch('/dilemma/search', {
       method: 'POST',

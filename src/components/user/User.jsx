@@ -3,6 +3,7 @@ import NavBar from './NavBar.jsx';
 import Dilemma from '../Dilemma.jsx';
 const {connect} = require('react-redux');
 import {loadDilemmas, addNewVote, changeVote, removeVote, removeDilemmaError, searchDilemma} from '../../actions/Dilemmas';
+import {logout} from '../../actions/Logout';
 
 class User extends React.Component {
   constructor(props) {
@@ -31,10 +32,16 @@ class User extends React.Component {
     this.props.dispatch(searchDilemma());
   }
 
+  logout() {
+    console.log(this.props)
+    this.props.dispatch(logout())
+  }
+
   render() {
     return (
       <div id="container">
-        <NavBar load={(tabName) => this.load(tabName)} search={() => this.search()}/>
+        <NavBar load={(tabName) => this.load(tabName)} search={() => this.search()} logout={() => this.logout()}
+          error={this.props.logoutError}/>
         {this.props.dilemmas ?
           this.props.dilemmas.map((dilemma, index) =>
             <Dilemma dilemma={dilemma} key={index} dilemmaNumber={index}
@@ -55,18 +62,19 @@ const mapStateToProps = (state) => {
   if(state.Dilemmas !== null && state.Dilemmas.data) {
     return {
       dilemmas: state.Dilemmas.data,
-      votes: state.Dilemmas.votes ? state.Dilemmas.votes : []
+      votes: state.Dilemmas.votes ? state.Dilemmas.votes : [],
+      logoutError: state.Logout ? state.Logout.error : ''
     };
   }
   else if(state.Dilemmas !== null && state.Dilemmas.error) {
     return {
-      error: state.Dilemmas.error
+      error: state.Dilemmas.error,
+      logoutError: state.Logout ? state.Logout.error : ''
     };
   }
   else {
     return {};
   }
 };
-
 
 export default connect(mapStateToProps)(User);

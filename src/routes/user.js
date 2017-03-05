@@ -4,6 +4,17 @@ const User = require('../models/User');
 const Vote = require('../models/Vote');
 const Dilemma = require('../models/Dilemma');
 
+router.post('/logout', (req, res) => {// its before middleware for sole reason of displaying logout failed error(middleware wouldnt let it go through)
+  if(req.cookies['id'] && req.cookies['token']) {
+    res.clearCookie('token');
+    res.clearCookie('id');
+    res.json({result: 'Success'});
+  }
+  else {
+    res.json({result: 'Logout failed'});
+  }
+});
+
 //middleware to verify the token
 router.use((req, res, next) => {
   //check header or url parameters or post parameters for token
@@ -14,6 +25,7 @@ router.use((req, res, next) => {
     jwt.verify(token, req.app.get('superSecret'), (err, decoded) => {
       if(err) {
         res.clearCookie('token');//remove the token
+        res.clearCookie('id');//remove users id
         return res.json({success: false, message: 'Failed to authenticate token.'});
       }
       else {
@@ -28,11 +40,23 @@ router.use((req, res, next) => {
   }
 });
 
+router.use((req, res, next) => { //in case token exists but id cookie doesnt
+  const id = req.cookies['id'];
+  if(!id) {
+    res.clearCookie('token');//remove the token
+    res.clearCookie('id');//remove users id
+    return res.redirect('http://localhost:3000');
+  }
+  else {
+    next();
+  }
+});
+
 router.get(['/', '/home', '/hot', '/newest', '/mine', '/search'], (req, res) => {
   res.render('index', { name: 'Indecisive' });
 });
 
-router.post('/settings/changeEmail', (req, res) => {
+router.post('/settings/email', (req, res) => {
   const data = req.body.value;
 
   User.findOne({
@@ -63,7 +87,7 @@ router.post('/settings/changeEmail', (req, res) => {
   });
 });
 
-router.post('/settings/changePassword', (req, res) => {
+router.post('/settings/password', (req, res) => {
   const data = req.body.value;
 
   User.findOneAndUpdate({
@@ -98,12 +122,6 @@ router.delete('/settings', (req, res) => {
       res.json({result: 'User not found'});
     }
   });
-});
-
-router.post('/logout', (req, res) => {
-  res.clearCookie('token');
-  res.clearCookie('id');
-  res.json({result: 'Success'});
 });
 
 module.exports = router;

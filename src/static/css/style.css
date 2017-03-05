@@ -493,3 +493,8 @@ button:disabled{
   pointer-events: none;
   opacity: 0.25;
 }
+
+#logoutError{
+  float:right;
+  margin-right: 10px;
+}

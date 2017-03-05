@@ -9,7 +9,7 @@ export const SETTINGS_DEACTIVATE_ACCOUNT_FAILURE = 'SETTINGS_DEACTIVATE_ACCOUNT_
 
 export function changeEmail(newEmail) {
   return (dispatch) => {
-    fetch('/user/settings/changeEmail', {
+    fetch('/user/settings/email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -45,7 +45,7 @@ function changeEmailSuccess(msg) {
 
 export function changePassword(newPassword) {
   return (dispatch) => {
-    fetch('/user/settings/changePassword', {
+    fetch('/user/settings/password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

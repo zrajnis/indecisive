@@ -29,18 +29,6 @@ class NavBar extends React.Component {
     this.setState({isCreateDilemmaModalOpen: false});
   }
 
-  logout() {
-    fetch('/user/logout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'same-origin'
-    }).then(() => {
-      window.location.href='http://localhost:3000';
-    });
-  }
-
   render() {
     return (
       <div id="navBarContainer">
@@ -56,11 +44,13 @@ class NavBar extends React.Component {
             <input type="search" placeholder="Search a dilemma" id="searchBar"/>
             <Link to="/user/search"><button type="button" id="searchBtn" onClick={() => this.props.search()}>
             </button></Link>
-            <button type="button" className="navBarBtn"  id="create" onClick={() => this.openCreateDilemmaModal()}>Create</button>
-            <button type="button" className="navBarBtn"  id="settings" onClick={() => this.openSettingsModal()}>Settings</button>
-            <button type="button" className="navBarBtn"  id="logout" onClick={() => this.logout()}>Log out</button>
+            <button type="button" className="navBarBtn" id="create" onClick={() => this.openCreateDilemmaModal()}>Create</button>
+            <button type="button" className="navBarBtn" id="settings" onClick={() => this.openSettingsModal()}>Settings</button>
+            <button type="button" className="navBarBtn" id="logout" onClick={() => this.props.logout()}>Log out</button>
           </div>
         </nav>
+
+        {this.props.error ? <div className="error" id="logoutError"> {this.props.error} </div> : ''}
 
         <Modal className="modal" backdropClassName="backdrop" id="settingsModal" isOpen={this.state.isSettingsModalOpen}
           onClose={() => this.closeSettingsModal()}>

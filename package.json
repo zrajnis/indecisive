@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./src/server.js",
-    "lint": "eslint ./src/reducers",
+    "lint": "eslint ./src/",
     "start:webpack": "webpack-dev-server --hot ",
     "auto-start": "nodemon --exec \"npm run lint && npm start\"",
     "start:server": "./src/server.js"
