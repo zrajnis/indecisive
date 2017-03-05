@@ -2,7 +2,7 @@ import React from 'react';
 import NavBar from './NavBar.jsx';
 import Dilemma from '../Dilemma.jsx';
 const {connect} = require('react-redux');
-import {loadDilemmas, addNewVote, changeVote, removeVote, removeDilemmaError} from '../../actions/Dilemmas';
+import {loadDilemmas, addNewVote, changeVote, removeVote, removeDilemmaError, searchDilemma} from '../../actions/Dilemmas';
 
 class User extends React.Component {
   constructor(props) {
@@ -12,11 +12,14 @@ class User extends React.Component {
   componentDidMount() {
     let tabName = window.location.href.split('/');
     tabName = tabName[tabName.length -1];
-    if(tabName !== 'user') {
+    if(tabName !== 'user' && tabName !== 'search') {
       this.props.dispatch(loadDilemmas(tabName));
     }
-    else {
+    else if(tabName === 'user') {
       this.props.dispatch(loadDilemmas('home'));
+    }
+    else {
+      this.props.dispatch(searchDilemma());
     }
   }
 
@@ -24,10 +27,14 @@ class User extends React.Component {
     this.props.dispatch(loadDilemmas(tabName));
   }
 
+  search() {
+    this.props.dispatch(searchDilemma());
+  }
+
   render() {
     return (
       <div id="container">
-        <NavBar load={(tabName) => this.load(tabName)}/>
+        <NavBar load={(tabName) => this.load(tabName)} search={() => this.search()}/>
         {this.props.dilemmas ?
           this.props.dilemmas.map((dilemma, index) =>
             <Dilemma dilemma={dilemma} key={index} dilemmaNumber={index}

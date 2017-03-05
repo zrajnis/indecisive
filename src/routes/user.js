@@ -28,7 +28,7 @@ router.use((req, res, next) => {
   }
 });
 
-router.get(['/', '/home', '/hot', '/newest', '/mine'], (req, res) => {
+router.get(['/', '/home', '/hot', '/newest', '/mine', '/search'], (req, res) => {
   res.render('index', { name: 'Indecisive' });
 });
 
