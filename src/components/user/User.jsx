@@ -33,7 +33,6 @@ class User extends React.Component {
   }
 
   logout() {
-    console.log(this.props)
     this.props.dispatch(logout())
   }
 

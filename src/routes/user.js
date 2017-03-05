@@ -40,22 +40,6 @@ router.use((req, res, next) => {
   }
 });
 
-router.use((req, res, next) => { //in case token exists but id cookie doesnt
-  const id = req.cookies['id'];
-  if(!id) {
-    res.clearCookie('token');//remove the token
-    res.clearCookie('id');//remove users id
-    return res.redirect('http://localhost:3000');
-  }
-  else {
-    next();
-  }
-});
-
-router.get(['/', '/home', '/hot', '/newest', '/mine', '/search'], (req, res) => {
-  res.render('index', { name: 'Indecisive' });
-});
-
 router.post('/settings/email', (req, res) => {
   const data = req.body.value;
 
@@ -80,7 +64,7 @@ router.post('/settings/email', (req, res) => {
             res.json({result: 'Success'});
           }
           else {
-            res.json({result: 'Something unexpected happened'});
+            res.json({result: 'User not found'});
           }
         });
     }
@@ -101,7 +85,7 @@ router.post('/settings/password', (req, res) => {
         res.json({result: 'Success'});
       }
       else {
-        res.json({result: 'Something unexpected happened'});
+        res.json({result: 'User not found'});
       }
     });
 });
@@ -122,6 +106,22 @@ router.delete('/settings', (req, res) => {
       res.json({result: 'User not found'});
     }
   });
+});
+
+router.use((req, res, next) => { //in case token exists but id cookie doesnt
+  const id = req.cookies['id'];
+  if(!id) {
+    res.clearCookie('token');//remove the token
+    res.clearCookie('id');//remove users id
+    return res.redirect('http://localhost:3000');
+  }
+  else {
+    next();
+  }
+});
+
+router.get(['/', '/home', '/hot', '/newest', '/mine', '/search'], (req, res) => {
+  res.render('index', { name: 'Indecisive' });
 });
 
 module.exports = router;
