@@ -1,6 +1,16 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
+const CryptoJS = require('crypto-js');
 const User = require('../models/User');
+
+router.use((req, res, next) => {
+  //check if user has an id cookie and if he has it,decrypt it
+  if(req.cookies['id']) {
+    req.cookies['id'] = CryptoJS.AES.decrypt(req.cookies['id'], req.app.get('superSecret')).toString(CryptoJS.enc.Utf8);
+  }
+  next();
+});
+
 
 router.get(['/', '/home', '/hot', '/newest', '/search'], (req, res) => {
   res.render('index', { name: 'Indecisive' });
@@ -63,8 +73,10 @@ router.post('/login', (req,res) => {
       const token = jwt.sign(user, req.app.get('superSecret'),{
         expiresIn : '24h' //expires in 24 hours
       });
+      const id = CryptoJS.AES.encrypt(user._id.toString(), req.app.get('superSecret')); //encrypt user id
+
       res.cookie('token', token, {expires: new Date(Date.now() + 86400000)});//86400000 miliseconds is 24 hours
-      res.cookie('id', user._id, {expires: new Date(Date.now() + 86400000)});
+      res.cookie('id', id.toString(), {expires: new Date(Date.now() + 86400000)});
       res.json({result: 'Success'});
     }
     else {
