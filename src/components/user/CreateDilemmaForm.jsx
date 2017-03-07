@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Field, reduxForm} from 'redux-form';
 import {resetAnswersArray, createDilemmaSuccess, createDilemmaFailure, clearDilemmaMessages}
   from '../../actions/CreateDilemma';
@@ -29,7 +29,7 @@ const answerField = ({input, type, clicked, meta: {touched, error}}) => (
   </div>
 );
 
-class CreateDilemmaForm extends React.Component {
+class CreateDilemmaForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -147,6 +147,15 @@ const mapStateToProps = (state) => {
   else {
     return {};
   }
+};
+
+CreateDilemmaForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  form: PropTypes.string.isRequired,
+  fields: PropTypes.array.isRequired,
+  answersArray: PropTypes.array.isRequired,
+  errorMsg : PropTypes.string.isRequired,
+  successMsg: PropTypes.string.isRequired
 };
 
 export default connect(mapStateToProps)(form(CreateDilemmaForm));

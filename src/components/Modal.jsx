@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 
-class Modal extends React.Component {
+class Modal extends Component {
   render() {
-    if(this.props.isOpen === false){
+    if(this.props.isOpen === false) {
       return null;
     }
     
@@ -25,5 +25,12 @@ class Modal extends React.Component {
     }
   }
 }
+
+Modal.propTypes = {
+  className: PropTypes.string.isRequired,
+  backdropClassName: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired
+};
 
 export default Modal;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Field, reduxForm} from 'redux-form';
 import {serverResponse, loginFailure, clearErrorMsg} from '../../actions/Login';
 const {connect} = require('react-redux');
@@ -15,7 +15,7 @@ const renderField = ({input, type}) => (
   </div>
 );
 
-class LoginForm extends React.Component {
+class LoginForm extends Component {
   componentWillUnmount() {
     this.props.dispatch(clearErrorMsg());
   }
@@ -70,6 +70,14 @@ const mapStateToProps = (state) => {
   else {
     return {};
   }
+};
+
+LoginForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  form: PropTypes.string.isRequired,
+  fields: PropTypes.array.isRequired,
+  errorMsg: PropTypes.string.isRequired
 };
 
 export default connect(mapStateToProps)(form(LoginForm));

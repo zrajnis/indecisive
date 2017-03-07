@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Field, reduxForm} from 'redux-form';
 import {serverResponse, clearErrorMsg} from '../../actions/Signup';
 const validate =  require('../../validator').validateSignup;
@@ -18,7 +18,7 @@ const renderField = ({input, type, meta: {touched, error}}) => (
   </div>
 );
 
-class SignupForm extends React.Component {
+class SignupForm extends Component {
   componentWillUnmount() {
     this.props.dispatch(clearErrorMsg());
   }
@@ -69,6 +69,15 @@ const mapStateToProps = (state) => {
   else {
     return {};
   }
+};
+
+SignupForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
+  form: PropTypes.string.isRequired,
+  fields: PropTypes.array.isRequired,
+  errorMsg: PropTypes.string.isRequired
 };
 
 export default connect(mapStateToProps)(form(SignupForm));

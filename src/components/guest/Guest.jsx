@@ -1,14 +1,10 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import NavBar from './NavBar.jsx';
 import Dilemma from '../Dilemma.jsx';
 const {connect} = require('react-redux');
 import {loadDilemmas, addNewVote, changeVote, removeVote, removeDilemmaError, searchDilemma} from '../../actions/Dilemmas';
 
-class Guest extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
+class Guest extends Component {
   componentDidMount() {
     let tabName = window.location.href.split('/');
     tabName = tabName[tabName.length -1];
@@ -44,7 +40,7 @@ class Guest extends React.Component {
                removeVote={(index, id) => this.props.dispatch(removeVote(index, id))}
                removeDilemmaError={(id) => this.props.dispatch(removeDilemmaError(id))}/>)
           :
-          <div className="errorMsg">{this.props.error} </div>
+          <div className="errorMsg">{this.props.error}</div>
         }
       </div>
     );
@@ -68,5 +64,11 @@ const mapStateToProps = (state) => {
   }
 };
 
+Guest.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  dilemmas: PropTypes.array,
+  votes: PropTypes.array,
+  error: PropTypes.string
+};
 
 export default connect(mapStateToProps)(Guest);
