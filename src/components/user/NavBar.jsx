@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import Modal from '../Modal.jsx';
 import Settings from './Settings.jsx';
 import CreateDilemmaForm from './CreateDilemmaForm.jsx';
 import {Link} from 'react-router';
 
-class NavBar extends React.Component {
+class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -77,4 +77,12 @@ class NavBar extends React.Component {
     );
   }
 }
+
+NavBar.propTypes = {
+  load: PropTypes.func.isRequired,
+  search: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
+  error: PropTypes.string
+};
+
 export default NavBar;

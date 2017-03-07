@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import {changeEmail, changePassword, deactivateAccount,
   failedEmailValidation, failedPasswordValidation, clearErrorMsg} from '../../actions/Settings';
 import SettingsField from './SettingsField.jsx';
 const validate = require('../../validator').validateSettings;
 const {connect} = require('react-redux');
 
-class Settings extends React.Component {
+class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -98,4 +98,14 @@ const mapStateToProps = (state) => {
     return {};
   }
 };
+
+Settings.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  emailError: PropTypes.string,
+  passwordError: PropTypes.string,
+  deactivateError: PropTypes.string,
+  successEmailMsg: PropTypes.string,
+  successPasswordMsg: PropTypes.string
+};
+
 export default connect(mapStateToProps)(Settings);

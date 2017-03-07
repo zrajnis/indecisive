@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 
 
-class Dilemma extends React.Component {
+class Dilemma extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,7 +21,7 @@ class Dilemma extends React.Component {
       }
       else {  //otherwise change the vote from one answer to another
         this.props.changeVote(this.props.voteIndex, index, this.props.dilemma._id);
-      };
+      }
     }
   }
 
@@ -63,5 +63,15 @@ class Dilemma extends React.Component {
     );
   }
 }
+
+Dilemma.propTypes = {
+  dilemma: PropTypes.object.isRequired,
+  voteIndex: PropTypes.number.isRequired,
+  removeDilemmaError: PropTypes.func.isRequired,
+  removeVote: PropTypes.func.isRequired,
+  addNewVote: PropTypes.func.isRequired,
+  changeVote: PropTypes.func.isRequired,
+  dilemmaNumber: PropTypes.number.isRequired
+};
 
 export default Dilemma;
