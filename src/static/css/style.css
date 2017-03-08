@@ -1,5 +1,6 @@
 body{
   background: #eddbcd;
+  margin: 0;
 }
 
 h1{
@@ -14,9 +15,9 @@ h1{
 }
 
 #container{
-  width: 1000px;
+  width: 100%;
   margin: auto;
-  min-height: 875px;
+  min-height: 888px;
   background: #233237;
   padding-bottom: 50px;
 }
@@ -391,7 +392,7 @@ button:disabled{
   width: 500px;
   background: #eddbcd;
   border: 1px solid #c06014;
-  margin-left: 250px;
+  margin-left: calc(50% - 250px);
   margin-top: 50px;
 }
 
@@ -497,4 +498,10 @@ button:disabled{
 #logoutError{
   float:right;
   margin-right: 10px;
+}
+
+.noScroll{
+  overflow: hidden;
+  height: calc(100% - 50px);
+  margin: auto;
 }
