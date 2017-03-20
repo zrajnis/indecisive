@@ -5,6 +5,9 @@ class Modal extends Component {
     if(this.props.isOpen === false) {
       return null;
     }
+    else {
+      document.getElementById('container').className = 'noScroll'; //remove scroll bar on the background if any modal is active
+    }
     
     return (
       <div>

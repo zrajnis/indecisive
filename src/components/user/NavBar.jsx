@@ -18,6 +18,7 @@ class NavBar extends Component {
   }
 
   closeSettingsModal() {
+    document.getElementById('container').className = ''; //remove noScroll class from the background
     this.setState({isSettingsModalOpen: false});
   }
 
@@ -26,6 +27,7 @@ class NavBar extends Component {
   }
 
   closeCreateDilemmaModal() {
+    document.getElementById('container').className = '';
     this.setState({isCreateDilemmaModalOpen: false});
   }
 
